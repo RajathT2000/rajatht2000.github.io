@@ -4,6 +4,7 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './tests',
   fullyParallel: true,
+  workers: 4, // more parallel browsers starve the animations and cause timing flakes
   retries: 0,
   reporter: [['list']],
   use: {

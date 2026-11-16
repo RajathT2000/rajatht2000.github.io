@@ -80,6 +80,9 @@ test.describe('ask-me agent: chat', () => {
     ['What are your hobbies?', /athletics and playing the piano/],
     ['How can I contact you?', /Contact section/],
     ['What is your email?', /rajatht@icloud\.com/],
+    ['Tell me about Split', /Split is a live web app for sharing bills fairly/],
+    ['What projects have you built?', /Split/],
+    ['Is Split built with Django?', /Django and PostgreSQL/],
     ['Tell me about yourself', /Rajath Thaliyadath/],
     ['Who are you?', /Rajath Thaliyadath/],
   ];

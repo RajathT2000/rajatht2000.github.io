@@ -128,10 +128,50 @@ test.describe('site', () => {
 
   test('clicking my name returns to the top', async ({ page }) => {
     await load(page);
-    await page.evaluate(() => window.scrollTo(0, 1500));
+    await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY)), { timeout: 3000 }).toBe(1500);
+    await page.waitForTimeout(200);
     await page.mouse.wheel(0, -100);
     await expect(page.locator('#hdr')).not.toHaveClass(/hide/, { timeout: 3000 });
     await page.locator('.mark').click();
     await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBe(0);
   });
+
+  // Regression 2026-11-16: part of the "Projects" title was clipped while scrolling
+  // (overflow:hidden reveal mask + line-height 1 cut the "j" descender, and parallax moved the title out of its mask).
+  for (const vp of [{ width: 1280, height: 800 }, { width: 375, height: 812 }]) {
+    test(`section titles are never clipped while scrolling (${vp.width}px)`, async ({ browser }) => {
+      const ctx = await browser.newContext({ viewport: vp });
+      const page = await ctx.newPage();
+      await load(page);
+      const max = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight);
+      const problems = [];
+      for (let y = 0; y <= max; y += 90) {
+        await page.evaluate(v => window.scrollTo({ top: v, behavior: 'instant' }), y);
+        await page.waitForTimeout(60);
+        const bad = await page.evaluate(() => {
+          const out = [];
+          document.querySelectorAll('.sh h2').forEach(h => {
+            const sec = h.closest('section').getBoundingClientRect();
+            if (sec.bottom < 0 || sec.top > innerHeight) return; // section not on screen
+            if (!h.closest('.mask, .mask.in') || !h.closest('.mask').classList.contains('in')) return; // not revealed yet
+            const range = document.createRange(); range.selectNodeContents(h);
+            const t = range.getBoundingClientRect(); // full glyph box incl. ascenders/descenders
+            for (let a = h.parentElement; a && a !== document.body; a = a.parentElement) {
+              const cs = getComputedStyle(a);
+              if (cs.overflow === 'visible' && cs.overflowX === 'visible' && cs.overflowY === 'visible' && cs.clipPath === 'none') continue;
+              const r = a.getBoundingClientRect();
+              if (t.top < r.top - 0.5 || t.bottom > r.bottom + 0.5 || t.left < r.left - 0.5 || t.right > r.right + 0.5) {
+                out.push(`${h.textContent} clipped by .${a.className} (text ${t.top.toFixed(1)}-${t.bottom.toFixed(1)}, box ${r.top.toFixed(1)}-${r.bottom.toFixed(1)})`);
+              }
+            }
+          });
+          return out;
+        });
+        bad.forEach(b => problems.push(`scrollY=${y}: ${b}`));
+      }
+      expect(problems).toEqual([]);
+      await ctx.close();
+    });
+  }
 });

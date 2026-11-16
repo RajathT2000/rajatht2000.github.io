@@ -19,7 +19,7 @@ test.describe('content', () => {
     for (const id of new Set(hrefs)) expect(html, `#${id}`).toContain(`id="${id}"`);
   });
 
-  test('no projects section or old project links (user has no projects yet)', () => {
+  test('no old project links (only projects the user gave are listed)', () => {
     expect(html).not.toContain('id="work"');
     expect(html).not.toMatch(/rajatht\.me|resume-agent|onrender\.com|hf\.space/);
   });
@@ -75,5 +75,13 @@ test.describe('content', () => {
     expect(html).not.toContain('you@example.com');
     expect(html).toContain('href="mailto:rajatht@icloud.com"');
     expect(html).toMatch(/>rajatht@icloud\.com</);
+  });
+
+  test('Projects section lists Split with its short and full text', () => {
+    expect(html).toContain('id="projects"');
+    expect(html).toContain('href="#projects"');
+    expect(html).toMatch(/<h4>Split<\/h4>/);
+    expect(html).toContain('Shared expense tracker for groups, trips, and households.');
+    expect(html).toContain('Split is a live web app for sharing bills fairly. Create a group, add members, log expenses with equal or custom splits, track who owes whom, and settle up. Built with Django and PostgreSQL, it supports recurring expenses and shareable edit links—no account login required.');
   });
 });

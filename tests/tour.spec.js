@@ -188,6 +188,40 @@ test.describe('welcome tutorial: first visit only', () => {
     await expect(page.locator('#tour')).toHaveCount(0);
   });
 
+  // User request 2026-11-16: run on first visit and on hard reload (Cmd+Shift+R), not on normal reload (Cmd+R).
+  test('does not show on a normal reload (Cmd+R)', async ({ page }) => {
+    await loadWithTour(page);
+    await page.keyboard.press('Escape');
+    for (let k = 0; k < 2; k++) {
+      await page.reload();
+      await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+      await page.waitForTimeout(2500);
+      await expect(page.locator('#tour')).toHaveCount(0);
+    }
+  });
+
+  test('shows again on a hard reload (Cmd+Shift+R)', async ({ page }) => {
+    await loadWithTour(page);
+    await page.keyboard.press('Escape');
+    await page.reload();
+    await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+    await page.waitForTimeout(2500);
+    await expect(page.locator('#tour')).toHaveCount(0);
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Page.reload', { ignoreCache: true });
+    await page.waitForLoadState('load');
+    await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+    await expect(page.locator('#tour')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('.tour-msg')).toHaveText('This switches light and dark mode.');
+  });
+
+  test('pressing Cmd+Shift+R marks the next load as a hard reload', async ({ page }) => {
+    await loadWithTour(page);
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Meta+Shift+R');
+    expect(await page.evaluate(() => sessionStorage.getItem('hardReload'))).toBe('1');
+  });
+
   test('a brand-new visitor still sees it', async ({ browser }) => {
     const ctx = await browser.newContext();
     const page = await ctx.newPage();
