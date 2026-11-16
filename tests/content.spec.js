@@ -112,4 +112,22 @@ test.describe('content', () => {
     expect(html).toContain('Shared expense tracker for groups, trips, and households.');
     expect(html).toContain('Split is a live web app for sharing bills fairly. Create a group, add members, log expenses with equal or custom splits, track who owes whom, and settle up. Built with Django and PostgreSQL, it supports recurring expenses and shareable edit links—no account login required.');
   });
+
+  // 2026-11-17: premium "R." favicon (Instrument Serif italic R + green dot), SVG with PNG fallbacks.
+  test('favicon: linked in <head> and files are valid', () => {
+    const fs = require('fs'), path = require('path'), root = path.join(__dirname, '..');
+    const head = html.slice(0, html.indexOf('</head>'));
+    expect(head).toContain('<link rel="icon" href="favicon.svg" type="image/svg+xml">');
+    expect(head).toContain('<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">');
+    expect(head).toContain('<link rel="apple-touch-icon" href="apple-touch-icon.png">');
+    const svg = fs.readFileSync(path.join(root, 'favicon.svg'), 'utf8');
+    expect(svg).toMatch(/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 64 64">/);
+    expect(svg).toMatch(/<path class="fg" d="M[^"]{50,}"/);       // the R outline
+    expect(svg).toContain('<circle class="dot"');                // the green dot
+    expect(svg).toContain('prefers-color-scheme:dark');          // adapts to dark browser tabs
+    expect(svg).not.toMatch(/<text|<script|href=/);              // pure shapes, no fonts/scripts
+    const png = f => { const b = fs.readFileSync(path.join(root, f)); expect(b.slice(1, 4).toString()).toBe('PNG'); return [b.readUInt32BE(16), b.readUInt32BE(20)]; };
+    expect(png('favicon-32.png')).toEqual([32, 32]);
+    expect(png('apple-touch-icon.png')).toEqual([180, 180]);
+  });
 });
