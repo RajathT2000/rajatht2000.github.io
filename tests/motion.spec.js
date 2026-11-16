@@ -65,17 +65,29 @@ test.describe('animations', () => {
     await expect.poll(() => card.evaluate(el => getComputedStyle(el).clipPath), { timeout: 4000 }).toBe('none');
   });
 
-  test('section transition: contact turns into an inverted band when in view', async ({ page }) => {
-    await load(page);
-    const before = await page.locator('#contact').evaluate(el => getComputedStyle(el).backgroundColor);
-    await page.evaluate(() => window.__lenis.scrollTo(document.body.scrollHeight, { immediate: true }));
-    await expect(page.locator('#contact')).toHaveClass(/flip/, { timeout: 3000 });
-    await page.waitForTimeout(1000);
-    const after = await page.locator('#contact').evaluate(el => getComputedStyle(el).backgroundColor);
-    expect(after).not.toBe(before);
-    expect(after).toBe('rgb(21, 21, 21)');
-    await expect(page.locator('#contact a[href="mailto:rajatht@icloud.com"]').first()).toBeVisible();
-  });
+  // Regression 2026-11-17 (requirement change): Contact was an inverted band (white in dark mode, black in light).
+  // It must follow the page theme like every other section.
+  for (const theme of ['light', 'dark']) {
+    test(`contact follows the ${theme} theme like the other sections`, async ({ page }) => {
+      await page.addInitScript(t => { localStorage.setItem('theme', t); localStorage.setItem('tourSeen', '1'); }, theme);
+      await page.goto('/');
+      await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+      await page.evaluate(() => window.__lenis.scrollTo(document.body.scrollHeight, { immediate: true }));
+      await page.waitForTimeout(1200);
+      const c = await page.evaluate(() => {
+        const bodyCs = getComputedStyle(document.body), ct = getComputedStyle(document.getElementById('contact'));
+        const edu = getComputedStyle(document.getElementById('education'));
+        const bg = ct.backgroundColor === 'rgba(0, 0, 0, 0)' ? bodyCs.backgroundColor : ct.backgroundColor;
+        const eduBg = edu.backgroundColor === 'rgba(0, 0, 0, 0)' ? bodyCs.backgroundColor : edu.backgroundColor;
+        return { bg, eduBg, body: bodyCs.backgroundColor, color: ct.color, bodyColor: bodyCs.color };
+      });
+      expect(c.bg).toBe(c.body);
+      expect(c.bg).toBe(c.eduBg);
+      expect(c.color).toBe(c.bodyColor);
+      expect(c.body).toBe(theme === 'dark' ? 'rgb(14, 14, 13)' : 'rgb(246, 244, 239)');
+      await expect(page.locator('#contact a[href="mailto:rajatht@icloud.com"]').first()).toBeVisible();
+    });
+  }
 
   test('scroll velocity skews big headings, then settles back to 0', async ({ page }) => {
     await load(page);

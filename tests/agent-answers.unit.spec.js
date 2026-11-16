@@ -1,0 +1,28 @@
+// Unit tests (no browser): run the agent's real answer() from index.html in Node.
+const { test, expect } = require('@playwright/test');
+const vm = require('vm');
+const { html } = require('./helpers');
+const { cases, unrelated, notOngoing, REFUSAL } = require('./agent-cases');
+
+const start = html.indexOf('  var KB=[');
+const end = html.indexOf('  function add(html,who){', start);
+if (start < 0 || end < 0) throw new Error('agent KB/answer() not found in index.html');
+const answer = vm.runInNewContext(html.slice(start, end) + '; answer;', {});
+const text = q => answer(q).replace(/<[^>]+>/g, '');
+
+test.describe('agent answers (unit)', () => {
+  for (const [q, re] of cases) {
+    test(`answers from portfolio: "${q}"`, () => { expect(text(q)).toMatch(re); });
+  }
+  for (const q of unrelated) {
+    test(`refuses unrelated: "${q}"`, () => { expect(text(q)).toMatch(REFUSAL); });
+  }
+  test('never claims Masters is ongoing', () => {
+    for (const q of notOngoing) expect(text(q)).not.toMatch(/pursuing|currently studying/i);
+  });
+  test('answers contain only safe, known links', () => {
+    for (const [q] of cases) {
+      for (const m of answer(q).matchAll(/href="([^"]+)"/g)) expect(m[1]).toMatch(/^(#contact|mailto:rajatht@icloud\.com)$/);
+    }
+  });
+});

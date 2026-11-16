@@ -3,6 +3,13 @@
   "private": true,
   "scripts": {
     "test": "playwright test",
+    "test:unit": "playwright test tests/content.spec.js tests/agent-answers.unit.spec.js",
+    "test:agent": "playwright test tests/agent-answers.unit.spec.js tests/agent.spec.js",
+    "test:tour": "playwright test tests/tour.spec.js",
+    "test:projects": "playwright test tests/projects.spec.js",
+    "test:motion": "playwright test tests/motion.spec.js",
+    "test:site": "playwright test tests/site.spec.js",
+    "test:content": "playwright test tests/content.spec.js",
     "vendor": "cp node_modules/lenis/dist/lenis.min.js node_modules/lenis/dist/lenis.css vendor/"
   },
   "devDependencies": {

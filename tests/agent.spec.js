@@ -66,42 +66,18 @@ test.describe('ask-me agent: chat', () => {
     expect(await page.evaluate(() => window.__x)).toBeUndefined();
   });
 
-  const cases = [
-    ["What's your current project?", /learning about AI agents and building small projects/],
-    ['What are you learning?', /learning about AI agents/],
-    ['Did you finish your masters?', /completed his Masters of IT in AI.*October 2026/],
-    ['Where did you study?', /Macquarie University/],
-    ['Tell me about your bachelor degree', /LBS College of Engineering, Kasaragod/],
-    ['Where are you from?', /from India/],
-    ['Do you know Python?', /Python, AI\/ML, Django and Selenium/],
-    ['Tech stack', /Selenium/],
-    ['Where have you worked?', /QBurst/],
-    ['Any certifications?', /Python Programming.*Django Framework.*AI & Machine Learning/],
-    ['What are your hobbies?', /athletics and playing the piano/],
-    ['How can I contact you?', /Contact section/],
-    ['What is your email?', /rajatht@icloud\.com/],
-    ['Tell me about Split', /Split is a live web app for sharing bills fairly/],
-    ['What projects have you built?', /Split/],
-    ['Is Split built with Django?', /Django and PostgreSQL/],
-    ['Tell me about yourself', /Rajath Thaliyadath/],
-    ['Who are you?', /Rajath Thaliyadath/],
-  ];
-  for (const [q, re] of cases) {
-    test(`answers from portfolio: "${q}"`, async ({ page }) => {
-      expect(await ask(page, q)).toMatch(re);
-    });
-  }
+  // Answer cases run as fast unit tests in agent-answers.unit.spec.js (same cases, no browser).
+  // These browser tests check the full path: typed question -> chat bubble.
+  const { cases, unrelated } = require('./agent-cases');
+  test('end to end: answers and refusals appear in the chat', async ({ page }) => {
+    const sample = [cases[0], cases.find(c => /email/.test(c[0])), cases.find(c => /Split/.test(c[0]))];
+    for (const [q, re] of sample) expect(await ask(page, q)).toMatch(re);
+    expect(await ask(page, unrelated[0])).toMatch(REFUSAL);
+  });
 
-  for (const q of ['What is the capital of France?', 'Who is the president?', 'Write me a poem', 'whats the weather tomorrow']) {
-    test(`refuses unrelated: "${q}"`, async ({ page }) => {
-      expect(await ask(page, q)).toMatch(REFUSAL);
-    });
-  }
-
-  test('never claims Masters is ongoing', async ({ page }) => {
-    for (const q of ['Are you studying?', 'education', 'Where are you from?']) {
-      expect(await ask(page, q)).not.toMatch(/pursuing|currently studying/i);
-    }
+  test('contact answer contains a working mailto link', async ({ page }) => {
+    await ask(page, 'What is your email?');
+    await expect(page.locator('#askLog .msg.bot').last().locator('a[href="mailto:rajatht@icloud.com"]')).toHaveCount(1);
   });
 });
 

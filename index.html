@@ -102,9 +102,6 @@ section::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;bac
 section.in::before{transform:none}
 html.lenis{scroll-behavior:auto}
 .sh,.skills{transform:skewY(var(--skew,0deg));transform-origin:left center}
-/* section transition: contact becomes an inverted band */
-#contact.flip{--bg:#151515;--ink:#f6f4ef;--muted:#a9a59c;--faint:#76736c;--line:#2e2d2a;--hover:#1f1e1c;background-color:var(--bg);color:var(--ink)}
-:root[data-theme="dark"] #contact.flip{--bg:#ecebe6;--ink:#0e0e0d;--muted:#5c5a55;--faint:#8d8a83;--line:#cfccc4;--hover:#e0ded8}
 /* scroll reveal: cards and rows wipe up (clip removed afterwards so 3D tilt works) */
 @keyframes wipe{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
 .cert.in,.edu.in,.now-item.in{animation:wipe 1.1s var(--ease) calc(var(--i,0) * 90ms) backwards}
@@ -523,8 +520,6 @@ footer a:hover span{transform:translateY(-3px)}
   function onScroll(){
     var y=scrollY, vh=innerHeight, max=document.documentElement.scrollHeight-vh;
     prog.style.transform='scaleX('+(max>0?y/max:0)+')';
-    var ct=document.getElementById('contact');
-    if(ct)ct.classList.toggle('flip',ct.getBoundingClientRect().top<vh*.6);
     if(y>lastY+4&&y>200&&performance.now()-upAt>700)hdr.classList.add('hide');else if(y<lastY-4)hdr.classList.remove('hide');
     lastY=y;
     if(!reduce){
