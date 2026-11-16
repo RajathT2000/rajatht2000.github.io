@@ -151,9 +151,9 @@ test.describe('welcome tutorial: steps', () => {
     expect(msgs.join(' ')).not.toMatch(/doing right now/);
   });
 
-  // Regression 2026-11-16: step 3 said "tap my name" without saying the header hides on scroll.
+  // Requirement change 2026-11-17: header is always visible, so step 3 must not say it hides.
   for (const vp of [{ width: 1280, height: 800 }, { width: 375, height: 812 }]) {
-    test(`step 3 tells how to bring the header back (${vp.width}px)`, async ({ browser }) => {
+    test(`step 3 describes the always-visible header correctly (${vp.width}px)`, async ({ browser }) => {
       const ctx = await browser.newContext({ viewport: vp });
       const page = await ctx.newPage();
       await loadWithTour(page);
@@ -161,7 +161,10 @@ test.describe('welcome tutorial: steps', () => {
       await page.locator('#tour').click();
       await page.waitForTimeout(500);
       await expect(page.locator('.tour-step')).toHaveText(/^03 \//);
-      await expect(page.locator('.tour-msg')).toContainText(/scroll up/i);
+      await expect(page.locator('.tour-msg')).toHaveText(vp.width <= 700
+        ? 'Tap my name anytime to jump back to the top.'
+        : 'Use the menu to jump straight to any section.');
+      await expect(page.locator('.tour-msg')).not.toContainText(/hides|scroll up/i);
       await ctx.close();
     });
   }

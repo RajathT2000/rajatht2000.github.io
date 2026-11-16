@@ -116,15 +116,25 @@ test.describe('site', () => {
     await expect(page.locator('#cursor')).toHaveCount(0);
   });
 
-  // Regression 2026-11-16: tutorial said "tap my name" but the header (name + menu) hides when scrolling down.
-  test('header hides on scroll down and comes back on scroll up', async ({ page }) => {
-    await load(page);
-    await page.mouse.wheel(0, 1200);
-    await expect(page.locator('#hdr')).toHaveClass(/hide/, { timeout: 3000 });
-    await page.mouse.wheel(0, -200);
-    await expect(page.locator('#hdr')).not.toHaveClass(/hide/, { timeout: 3000 });
-    await expect(page.locator('.mark')).toBeInViewport();
-  });
+  // Requirement change 2026-11-17: the header bar is fixed and always visible (it no longer hides on scroll).
+  for (const vp of [{ width: 1280, height: 800 }, { width: 375, height: 812 }]) {
+    test(`header bar stays fixed and visible while scrolling down and up (${vp.width}px)`, async ({ browser }) => {
+      const ctx = await browser.newContext({ viewport: vp });
+      const page = await ctx.newPage();
+      await load(page);
+      expect(await page.locator('#hdr').evaluate(el => getComputedStyle(el).position)).toBe('fixed');
+      for (const dy of [600, 900, 1500, -400, 2000, -2500]) {
+        await page.mouse.move(100, 400);
+        await page.mouse.wheel(0, dy);
+        await page.waitForTimeout(500);
+        const top = await page.locator('#hdr').evaluate(el => el.getBoundingClientRect().top);
+        expect(Math.abs(top)).toBeLessThan(1);
+        await expect(page.locator('.mark')).toBeInViewport();
+        await expect(page.locator('#hdr')).not.toHaveClass(/hide/);
+      }
+      await ctx.close();
+    });
+  }
 
   test('clicking my name returns to the top', async ({ page }) => {
     await load(page);

@@ -46,7 +46,6 @@ a{color:inherit;text-decoration:none}
 
 /* nav */
 header{position:fixed;inset:0 0 auto;z-index:50;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);transition:transform .5s var(--ease)}
-header.hide{transform:translateY(-100%)}
 nav{display:flex;justify-content:space-between;align-items:center;height:72px;font-size:.82rem;letter-spacing:.02em}
 .mark{font-family:"Instrument Serif",serif;font-size:1.35rem;letter-spacing:0;overflow:hidden;display:inline-flex}
 .mark span{display:inline-block;transition:transform .5s var(--ease)}
@@ -512,22 +511,16 @@ footer a:hover span{transform:translateY(-3px)}
     els.forEach(function(e){io.observe(e)});
   }
 
-  /* 5. parallax + progress + nav hide + about words + active nav */
+  /* 5. parallax + progress + about words + active nav (header bar stays fixed) */
   var par=[].slice.call(document.querySelectorAll('[data-speed]'));
   var hx=[].slice.call(document.querySelectorAll('[data-x]'));
   var prog=document.getElementById('progress'), hdr=document.getElementById('hdr');
   var navLinks=[].slice.call(document.querySelectorAll('.nav-r a'));
   var secs=navLinks.map(function(a){return document.querySelector(a.getAttribute('href'))});
   var lastY=0, ticking=false;
-  /* scrolling up (wheel/touch) shows the header at once, even while smooth scrolling is still settling */
-  var upAt=-1e9, touchY=0;
-  addEventListener('wheel',function(e){if(e.deltaY<0){upAt=performance.now();hdr.classList.remove('hide')}},{passive:true});
-  addEventListener('touchstart',function(e){touchY=e.touches[0].clientY},{passive:true});
-  addEventListener('touchmove',function(e){if(e.touches[0].clientY>touchY+8){upAt=performance.now();hdr.classList.remove('hide')}},{passive:true});
   function onScroll(){
     var y=scrollY, vh=innerHeight, max=document.documentElement.scrollHeight-vh;
     prog.style.transform='scaleX('+(max>0?y/max:0)+')';
-    if(y>lastY+4&&y>200&&performance.now()-upAt>700)hdr.classList.add('hide');else if(y<lastY-4)hdr.classList.remove('hide');
     lastY=y;
     if(!reduce){
       par.forEach(function(el){
@@ -761,7 +754,7 @@ body.touring{overflow:hidden}
     {el:function(){return document.querySelector('#askBtn .ask-av')},top:true,agent:true,
      msg:"This is the miniature me. Click it anytime to ask about my education, skills, experience and interests."},
     {el:function(){return narrow()?document.querySelector('.mark'):document.querySelector('.nav-r')},top:true,
-     msg:function(){return narrow()?"Tap my name to jump back to the top. It hides as you scroll down; scroll up a little to bring it back.":"Use the menu to jump straight to any section. It hides as you scroll down; scroll up a little to bring it back."}},
+     msg:function(){return narrow()?"Tap my name anytime to jump back to the top.":"Use the menu to jump straight to any section."}},
     {el:function(){return document.querySelector('#contact .wrap')},
      msg:"Want to reach me? Get in touch here."}
   ];
