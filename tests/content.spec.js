@@ -65,4 +65,9 @@ test.describe('content', () => {
   test('footer copyright', () => {
     expect(html).toContain('© 2026 Rajath Thaliyadath. All rights reserved.');
   });
+
+  test('no cursor-follower circle code', () => {
+    expect(html).not.toContain('id="cursor"');
+    expect(html).not.toMatch(/#cursor\b/);
+  });
 });

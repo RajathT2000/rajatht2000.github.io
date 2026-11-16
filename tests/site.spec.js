@@ -79,4 +79,40 @@ test.describe('site', () => {
     await expect(page.locator('#heroTitle')).toBeVisible();
     await ctx.close();
   });
+
+  // Regression 2026-11-16: page opened scrolled to Education instead of the top.
+  for (const url of ['/', '/#education', '/#contact']) {
+    test(`after loading, page starts at the top (home), url ${url}`, async ({ page }) => {
+      await page.goto(url);
+      await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+      await page.waitForTimeout(600);
+      expect(await page.evaluate(() => window.scrollY)).toBe(0);
+      expect(await page.evaluate(() => location.hash)).toBe('');
+    });
+  }
+
+  test('reload after scrolling to a section returns to the top', async ({ page }) => {
+    await load(page);
+    await page.locator('.nav-r a[href="#education"]').click();
+    await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeGreaterThan(200);
+    await page.reload();
+    await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+    await page.waitForTimeout(600);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  });
+
+  test('nav clicks do not add a #hash to the URL', async ({ page }) => {
+    await load(page);
+    await page.locator('.nav-r a[href="#skills"]').click();
+    await page.waitForTimeout(300);
+    expect(await page.evaluate(() => location.hash)).toBe('');
+  });
+
+  // Regression 2026-11-16: user asked to remove the circle that followed the cursor.
+  test('no cursor-follower circle', async ({ page }) => {
+    await load(page);
+    await page.mouse.move(300, 300);
+    await page.mouse.move(400, 350);
+    await expect(page.locator('#cursor')).toHaveCount(0);
+  });
 });

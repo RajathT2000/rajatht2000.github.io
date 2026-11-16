@@ -37,15 +37,8 @@ a{color:inherit;text-decoration:none}
 .ld-bar i{position:absolute;inset:0;background:var(--bg);transform-origin:left;transform:scaleX(0)}
 .ld-count{font-family:"Instrument Serif",serif;font-size:clamp(2.4rem,6vw,4.5rem);line-height:.8;font-variant-numeric:tabular-nums;min-width:3ch;text-align:right}
 
-/* ---------- micro: progress, cursor ---------- */
+/* ---------- micro: progress ---------- */
 #progress{position:fixed;top:0;left:0;right:0;height:1px;background:var(--ink);transform-origin:left;transform:scaleX(0);z-index:60}
-#cursor{position:fixed;top:0;left:0;width:36px;height:36px;margin:-18px 0 0 -18px;border:1px solid var(--ink);border-radius:50%;pointer-events:none;z-index:90;display:grid;place-items:center;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--bg);transition:width .35s var(--ease),height .35s var(--ease),margin .35s var(--ease),background .35s,border-color .35s,opacity .3s;opacity:0}
-#cursor span{opacity:0;transition:opacity .2s}
-#cursor.link{width:56px;height:56px;margin:-28px 0 0 -28px;background:color-mix(in srgb,var(--ink) 8%,transparent)}
-#cursor.view{width:84px;height:84px;margin:-42px 0 0 -42px;background:var(--ink);border-color:var(--ink)}
-#cursor.view span{opacity:1}
-#cursor.down{transform:scale(.85)}
-@media (hover:none),(pointer:coarse){#cursor{display:none}}
 
 /* nav */
 header{position:fixed;inset:0 0 auto;z-index:50;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);transition:transform .5s var(--ease)}
@@ -208,7 +201,7 @@ footer a:hover span{transform:translateY(-3px)}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;transition-delay:0s!important}
   html{scroll-behavior:auto}
-  #cursor,.scroll-cue{display:none}
+  .scroll-cue{display:none}
 }
 </style>
 <noscript><style>#loader{display:none}.r,.h-fade,.line>span,.mask>*,.sk b{opacity:1!important;transform:none!important}</style></noscript>
@@ -270,7 +263,6 @@ footer a:hover span{transform:translateY(-3px)}
   <div class="ld-foot"><div class="ld-bar"><i id="ldBar"></i></div><div class="ld-count" id="ldCount">0</div></div>
 </div>
 <div id="progress"></div>
-<div id="cursor"><span>View</span></div>
 
 <header id="hdr">
   <div class="wrap">
@@ -371,7 +363,7 @@ footer a:hover span{transform:translateY(-3px)}
     <div class="wrap">
       <div class="num r" style="padding:0 0 32px">04 — Contact</div>
       <!-- TODO: replace you@example.com with your real email (both places) -->
-      <h2 class="r">Let's <a class="mag" data-cursor="link" href="mailto:you@example.com"><em>talk</em> ↗</a></h2>
+      <h2 class="r">Let's <a class="mag" href="mailto:you@example.com"><em>talk</em> ↗</a></h2>
       <p class="r">you@example.com</p>
     </div>
   </section>
@@ -384,6 +376,20 @@ footer a:hover span{transform:translateY(-3px)}
   var root=document.documentElement, body=document.body;
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  /* always start at the top (home) on load/reload; never jump to a #section */
+  if('scrollRestoration' in history)history.scrollRestoration='manual';
+  if(location.hash)history.replaceState(null,'',location.pathname+location.search);
+  function toTop(){window.scrollTo({top:0,left:0,behavior:'instant'})}
+  toTop();addEventListener('load',toTop);addEventListener('pageshow',toTop);
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]');if(!a)return;
+    var id=a.getAttribute('href').slice(1), el=id?document.getElementById(id):null;
+    if(!el&&id!=='top')return;
+    e.preventDefault();
+    if(id==='top'||!el)window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+    else el.scrollIntoView({behavior:reduce?'auto':'smooth'});
+  });
 
   /* theme */
   try{var t=localStorage.getItem('theme');if(t)root.dataset.theme=t;}catch(e){}
@@ -500,18 +506,6 @@ footer a:hover span{transform:translateY(-3px)}
     m.addEventListener('mouseleave',function(){m.style.transform=''});
   });
 
-  /* 4/6. cursor follower */
-  var cur=document.getElementById('cursor'), mx=-100, my=-100, cx=-100, cy=-100;
-  addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.opacity=1});
-  document.addEventListener('mouseleave',function(){cur.style.opacity=0});
-  addEventListener('mousedown',function(){cur.classList.add('down')});
-  addEventListener('mouseup',function(){cur.classList.remove('down')});
-  document.addEventListener('mouseover',function(e){
-    var v=e.target.closest('[data-cursor="view"]'), l=e.target.closest('a,button,summary');
-    cur.classList.toggle('view',!!v);
-    cur.classList.toggle('link',!v&&!!l);
-  });
-  (function loop(){cx+=(mx-cx)*.18;cy+=(my-cy)*.18;cur.style.transform='translate3d('+cx+'px,'+cy+'px,0)'+(cur.classList.contains('down')?' scale(.85)':'');requestAnimationFrame(loop)})();
 })();
 </script>
 <!-- Ask-me resume agent -->

@@ -27,3 +27,5 @@ npm test
 ## Regression log
 
 - 2026-11-16: "Tell me about your bachelor degree" got the intro answer ("about your" matched "about you"). Fixed with word boundaries; covered by `agent.spec.js` bachelor case.
+- 2026-11-16: After loading/reloading, the page jumped to Education (browser restored scroll position / #hash). Fixed: always start at the top, nav clicks no longer add #hash. Covered by `site.spec.js` "starts at the top", "reload ... returns to the top", "nav clicks do not add a #hash".
+- 2026-11-16: User asked to remove the circle following the cursor. Removed; covered by `content.spec.js` + `site.spec.js` "no cursor-follower circle".
