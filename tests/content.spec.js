@@ -51,10 +51,21 @@ test.describe('content', () => {
     for (const a of blanks) expect(a, a).toMatch(/rel="[^"]*noopener/);
   });
 
-  test('no external scripts; only Google Fonts stylesheets', () => {
-    expect(html).not.toMatch(/<script[^>]+src=/);
+  // Requirement change 2026-11-17: Lenis added. Scripts/styles may load only from the site's own vendor/ folder.
+  test('no external scripts; only Google Fonts or local vendor/ stylesheets', () => {
+    const srcs = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]);
+    for (const src of srcs) expect(src, src).toMatch(/^vendor\/[\w.-]+\.js$/);
     const sheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g)].map(m => m[0]);
-    for (const l of sheets) expect(l).toContain('fonts.googleapis.com');
+    for (const l of sheets) expect(l).toMatch(/fonts\.googleapis\.com|href="vendor\/[\w.-]+\.css"/);
+  });
+
+  test('Lenis is vendored locally and matches the installed package', () => {
+    const fs = require('fs'), path = require('path');
+    const root = path.join(__dirname, '..');
+    expect(html).toContain('<script src="vendor/lenis.min.js"></script>');
+    const vendored = fs.readFileSync(path.join(root, 'vendor/lenis.min.js'), 'utf8');
+    const pkg = fs.readFileSync(path.join(root, 'node_modules/lenis/dist/lenis.min.js'), 'utf8');
+    expect(vendored).toBe(pkg);
   });
 
   test('responsive meta + language set', () => {
