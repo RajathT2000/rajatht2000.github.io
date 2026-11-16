@@ -4,11 +4,16 @@ const path = require('path');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
-/** Open the page and wait for the loader to finish. */
+/** Open the page, wait for the loader to finish, then close the welcome tutorial
+ *  (it starts on every load; tests/tour.spec.js covers it). */
 async function load(page) {
   await page.goto('/');
   await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
   await expect(page.locator('#loader')).toHaveCount(0, { timeout: 5000 });
+  await expect(page.locator('#tour')).toBeVisible({ timeout: 5000 });
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#tour')).toHaveCount(0, { timeout: 3000 });
+  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 3000 }).toBe(0);
 }
 
 /** Scroll past the About section so the Ask-me agent appears. */
