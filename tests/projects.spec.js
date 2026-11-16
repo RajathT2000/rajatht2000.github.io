@@ -53,10 +53,44 @@ test.describe('projects: Split', () => {
   });
 });
 
+test.describe('projects: Split link', () => {
+  test.beforeEach(async ({ context }) => {
+    await context.route('https://split.rajatht.me/**', r => r.fulfill({ status: 200, contentType: 'text/html', body: '<title>Split</title>ok' }));
+  });
+
+  test('clicking the card opens https://split.rajatht.me/ in a new tab', async ({ page, context }) => {
+    await load(page);
+    const card = page.locator('#projects .proj', { hasText: 'Split' });
+    await card.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1200);
+    const [tab] = await Promise.all([context.waitForEvent('page'), card.click()]);
+    await tab.waitForLoadState();
+    expect(tab.url()).toBe('https://split.rajatht.me/');
+    expect(page.url()).toMatch(/127\.0\.0\.1:5174/); // portfolio stays open
+  });
+
+  test('keyboard: Enter on the focused card opens the live site', async ({ page, context }) => {
+    await load(page);
+    const card = page.locator('#projects .proj').first();
+    await card.focus();
+    const [tab] = await Promise.all([context.waitForEvent('page'), page.keyboard.press('Enter')]);
+    await tab.waitForLoadState();
+    expect(tab.url()).toBe('https://split.rajatht.me/');
+  });
+
+  test('card shows it can be opened (pointer cursor + open hint)', async ({ page }) => {
+    await load(page);
+    const card = page.locator('#projects .proj').first();
+    expect(await card.evaluate(el => getComputedStyle(el).cursor)).toBe('pointer');
+    await expect(card.locator('.proj-go')).toHaveText('↗');
+  });
+});
+
 test.describe('projects: Split on mobile', () => {
   test.use({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
 
-  test('tap shows the full text; card fits the screen', async ({ page }) => {
+  test('tap shows the full text; card fits the screen', async ({ page, context }) => {
+    await context.route('https://split.rajatht.me/**', r => r.fulfill({ status: 200, contentType: 'text/html', body: 'ok' }));
     await load(page);
     const card = page.locator('#projects .proj').first();
     await card.scrollIntoViewIfNeeded();

@@ -192,7 +192,10 @@ a.row:hover .arrow,.row .meta:hover .arrow{transform:rotate(45deg);background:va
 /* ---------- projects (same card style as .cert) ---------- */
 .projects{display:grid;gap:16px;perspective:900px}
 @media(min-width:760px){.projects{grid-template-columns:repeat(2,1fr)}}
-.proj{outline:none;cursor:default}
+.proj{outline:none;cursor:default;display:block;color:inherit}
+a.proj{cursor:pointer}
+.proj-go{position:absolute;top:22px;right:22px;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;font-size:.9rem;transform:translateZ(30px);transition:transform .5s var(--ease),background .3s,color .3s,border-color .3s}
+a.proj:hover .proj-go,a.proj:focus-visible .proj-go{transform:translateZ(30px) rotate(45deg);background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .proj:focus-visible{border-color:var(--ink)}
 .proj .proj-body{display:grid;transform:translateZ(20px)}
 .proj .proj-short,.proj .proj-full{grid-area:1/1;transition:opacity .45s var(--ease),transform .55s var(--ease)}
@@ -350,15 +353,16 @@ footer a:hover span{transform:translateY(-3px)}
     <div class="wrap">
       <div class="sh"><div class="num r">02 — Projects</div><div class="mask" data-speed="0.06"><h2>Projects</h2></div></div>
       <div class="projects stagger">
-        <article class="cert proj r tilt" tabindex="0" aria-label="Split: Shared expense tracker for groups, trips, and households.">
+        <a class="cert proj r tilt" href="https://split.rajatht.me/" target="_blank" rel="noopener" aria-label="Split: Shared expense tracker for groups, trips, and households. Opens the live site in a new tab.">
+          <span class="proj-go" aria-hidden="true">↗</span>
           <span class="ix">01</span>
           <h4>Split</h4>
           <div class="proj-body">
             <p class="proj-short">Shared expense tracker for groups, trips, and households.</p>
             <p class="proj-full">Split is a live web app for sharing bills fairly. Create a group, add members, log expenses with equal or custom splits, track who owes whom, and settle up. Built with Django and PostgreSQL, it supports recurring expenses and shareable edit links—no account login required.</p>
           </div>
-          <span class="proj-hint">Hover for details</span>
-        </article>
+          <span class="proj-hint">Hover for details · click to open</span>
+        </a>
       </div>
     </div>
   </section>
@@ -548,9 +552,11 @@ footer a:hover span{transform:translateY(-3px)}
   onScroll();
 
   /* projects: tap/Enter toggles the full description (touch has no hover) */
+  /* cards with a live link (<a>) open it in a new tab; cards without one toggle their details */
   document.querySelectorAll('.proj').forEach(function(c){
-    var h=c.querySelector('.proj-hint');
-    if(h&&!matchMedia('(hover:hover)').matches)h.textContent='Tap for details';
+    var h=c.querySelector('.proj-hint'), touch=!matchMedia('(hover:hover)').matches, isLink=c.tagName==='A';
+    if(h&&touch)h.textContent=isLink?'Tap to open the live site':'Tap for details';
+    if(isLink)return;
     c.addEventListener('click',function(){c.classList.toggle('open')});
     c.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();c.classList.toggle('open')}});
   });

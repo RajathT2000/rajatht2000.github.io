@@ -19,9 +19,26 @@ test.describe('content', () => {
     for (const id of new Set(hrefs)) expect(html, `#${id}`).toContain(`id="${id}"`);
   });
 
-  test('no old project links (only projects the user gave are listed)', () => {
+  // Requirement change 2026-11-17: the user gave Split's live URL; it is the only project link allowed.
+  test('no old project links (only links the user gave are listed)', () => {
     expect(html).not.toContain('id="work"');
-    expect(html).not.toMatch(/rajatht\.me|resume-agent|onrender\.com|hf\.space/);
+    const rest = html.split('https://split.rajatht.me/').join('');
+    expect(rest).not.toMatch(/rajatht\.me|resume-agent|onrender\.com|hf\.space/);
+  });
+
+  test('project cards: a card is a link only if it has a live URL, opening in a new tab', () => {
+    const cards = [...html.matchAll(/<(a|article)\b[^>]*class="[^"]*\bproj\b[^"]*"[^>]*>/g)].map(m => m[0]);
+    expect(cards.length).toBeGreaterThan(0);
+    for (const c of cards) {
+      if (c.startsWith('<a')) {
+        expect(c).toMatch(/href="https:\/\/[^"]+"/);
+        expect(c).toContain('target="_blank"');
+        expect(c).toMatch(/rel="[^"]*noopener/);
+      } else {
+        expect(c).not.toContain('href=');
+      }
+    }
+    expect(html).toMatch(/<a\b[^>]*class="[^"]*\bproj\b[^"]*"[^>]*href="https:\/\/split\.rajatht\.me\/"/);
   });
 
   test('Masters shown as completed Oct 2026, not "pursuing"', () => {
