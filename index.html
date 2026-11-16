@@ -123,6 +123,14 @@ section{padding:120px 0;border-top:1px solid var(--line)}
 .about-text .w{color:var(--faint);transition:color .5s}
 .about-text .w.lit{color:var(--ink)}
 .about-small{margin-top:32px;color:var(--muted)}
+.now{margin-top:48px;border-top:1px solid var(--line)}
+.now-item{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);transition:padding .5s var(--ease)}
+.now-item:hover{padding-left:10px}
+.now-item small{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.now-item span{font-family:"Instrument Serif",serif;font-size:1.45rem;line-height:1.25}
+.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3fb27f;margin-right:8px;vertical-align:middle;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(63,178,127,.5)}70%,100%{box-shadow:0 0 0 8px rgba(63,178,127,0)}}
+@media(max-width:560px){.now-item{grid-template-columns:1fr;gap:4px}}
 
 /* ---------- project rows + hover ---------- */
 .group{margin-bottom:72px}
@@ -290,7 +298,7 @@ footer a:hover span{transform:translateY(-3px)}
       </div>
       <div class="hero-foot">
         <p class="h-fade d1"><strong>Rajath Thaliyadath</strong><br>AI &amp; Software Engineer specializing in RAG, Python, and Django</p>
-        <p class="h-fade d1">Masters of IT in AI<br>Macquarie University, Sydney</p>
+        <p class="h-fade d1">Masters of IT in AI, completed Oct 2026<br>Now learning about AI agents</p>
         <div class="h-fade d2"><a class="link mag" href="#contact">Get in touch <span class="ar">→</span></a></div>
       </div>
     </div>
@@ -303,8 +311,13 @@ footer a:hover span{transform:translateY(-3px)}
       <div class="body">
         <div></div>
         <div>
-          <p class="about-text" id="aboutText">Hi, I'm Rajath Thaliyadath, an AI &amp; Software Engineer from India currently pursuing my Masters of IT in AI at Macquarie University, Australia. With experience at QBurst and a passion for building intelligent agents, I specialize in Retrieval-Augmented Generation (RAG), Python, and Django.</p>
+          <p class="about-text" id="aboutText">Hi, I'm Rajath Thaliyadath, an AI &amp; Software Engineer from India. I completed my Masters of IT in AI at Macquarie University, Australia, in October 2026. With experience at QBurst and a passion for building intelligent agents, I specialize in Retrieval-Augmented Generation (RAG), Python, and Django.</p>
           <p class="about-small r">Beyond coding, I enjoy athletics and playing the piano.</p>
+          <div class="now stagger">
+            <div class="now-item r"><small><i class="pulse"></i>Now</small><span>Learning about AI agents</span></div>
+            <div class="now-item r"><small>Building</small><span>Small projects to practise what I learn</span></div>
+            <div class="now-item r"><small>Completed</small><span>Masters of IT in AI, Macquarie University, October 2026</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -318,7 +331,7 @@ footer a:hover span{transform:translateY(-3px)}
           <h3>Masters of IT in AI</h3>
           <div>
             <div class="where">Macquarie University, Sydney</div>
-            <p>Currently pursuing advanced studies in Artificial Intelligence and Information Technology.</p>
+            <p>Completed in October 2026. Advanced studies in Artificial Intelligence and Information Technology.</p>
             <a href="https://www.mq.edu.au/study/find-a-course/courses/master-of-information-technology" target="_blank" rel="noopener">Course details ↗</a>
           </div>
         </div>
@@ -548,27 +561,27 @@ footer a:hover span{transform:translateY(-3px)}
 
   /* knowledge: portfolio content only */
   var KB=[
-    {k:['current','currently','project','projects','building','working','now','doing','apps','built','portfolio'],
-     a:"There are no projects listed on the portfolio yet. Right now Rajath is pursuing his Masters of IT in AI at Macquarie University, Sydney, with a passion for building intelligent agents."},
+    {k:['current','currently','project','projects','building','working','now','doing','apps','built','portfolio','learning','learn','agents','agent','small'],
+     a:"Right now Rajath is learning about AI agents and building small projects to practise what he learns. They aren't listed on the portfolio yet."},
     {k:['certifications','certification','certificates','certificate','certified','courses','training','learned'],
      a:"Rajath's certifications & courses: Python Programming (Python fundamentals and advanced concepts), Django Framework (Django web development), and AI & Machine Learning (AI and ML fundamentals)."},
-    {k:['education','study','studying','studies','masters','master','university','macquarie','degree','degrees','qualification','qualifications','course','sydney','student'],
-     a:"Rajath is currently pursuing a Masters of IT in AI at Macquarie University, Sydney. Before that he completed a Bachelor's Degree in Engineering at LBS College of Engineering, Kasaragod."},
+    {k:['education','study','studying','studies','graduate','graduated','completed','finished','finish','masters','master','university','macquarie','degree','degrees','qualification','qualifications','course','sydney','student'],
+     a:"Rajath completed his Masters of IT in AI at Macquarie University, Sydney, in October 2026. Before that he completed a Bachelor's Degree in Engineering at LBS College of Engineering, Kasaragod."},
     {k:['bachelor','bachelors','undergraduate','undergrad','lbs','kasaragod','engineering','graduated'],
      a:"Rajath completed his Bachelor's Degree (undergraduate studies in Engineering) at LBS College of Engineering, Kasaragod."},
     {k:['experience','qburst','job','jobs','work','worked','company','career','employer','industry','professional'],
      a:"Rajath has experience at QBurst. He's an AI & Software Engineer specializing in RAG, Python, and Django."},
-    {k:['skills','skill','stack','tech','technologies','technology','tools','languages','language','python','django','selenium','ml','ai','machine','expertise','specialize','specialise','specializes','specialty','rag','retrieval','agents','strengths'],
+    {k:['skills','skill','stack','tech','technologies','technology','tools','languages','language','python','django','selenium','ml','ai','machine','expertise','specialize','specialise','specializes','specialty','rag','retrieval','strengths'],
      a:"Rajath specializes in Retrieval-Augmented Generation (RAG), Python, and Django. His tech stack: Python, AI/ML, Django and Selenium."},
     {k:['hobby','hobbies','interests','interest','fun','free','piano','athletics','music','sport','sports','enjoy','outside','passion','passions'],
      a:"Beyond coding, Rajath enjoys athletics and playing the piano."},
     {k:['where','from','live','based','location','country','india','australia','city'],
-     a:"Rajath is from India and is currently studying in Sydney, Australia, at Macquarie University."},
+     a:"Rajath is from India and completed his Masters at Macquarie University in Sydney, Australia."},
     {k:['contact','email','reach','hire','connect','touch','message','available','hiring'],
      a:'You can get in touch through the <a href="#contact" data-close>Contact section</a> at the bottom of this page.'},
     {k:['rajath','yourself','introduce','introduction','background','summary','bio','engineer','profile','overview'],
      p:/who are you|about you|who is rajath|tell me about (him|yourself)/,
-     a:"Hi, I'm Rajath Thaliyadath, an AI & Software Engineer from India currently pursuing my Masters of IT in AI at Macquarie University, Australia. With experience at QBurst and a passion for building intelligent agents, I specialize in RAG, Python, and Django."},
+     a:"Hi, I'm Rajath Thaliyadath, an AI & Software Engineer from India. I completed my Masters of IT in AI at Macquarie University, Australia, in October 2026, and I'm now learning about AI agents and building small projects. With experience at QBurst, I specialize in RAG, Python, and Django."},
     {k:['hi','hello','hey','hiya','greetings','yo','namaste'],
      a:"Hi! 👋 Ask me anything about Rajath's portfolio: education, experience, skills, certifications or interests."},
     {k:['thanks','thank','thx','cheers'],a:"You're welcome! Anything else about the portfolio?"}
