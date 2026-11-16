@@ -362,9 +362,8 @@ footer a:hover span{transform:translateY(-3px)}
   <section id="contact" class="contact">
     <div class="wrap">
       <div class="num r" style="padding:0 0 32px">04 — Contact</div>
-      <!-- TODO: replace you@example.com with your real email (both places) -->
-      <h2 class="r">Let's <a class="mag" href="mailto:you@example.com"><em>talk</em> ↗</a></h2>
-      <p class="r">you@example.com</p>
+      <h2 class="r">Let's <a class="mag" href="mailto:rajatht@icloud.com"><em>talk</em> ↗</a></h2>
+      <p class="r"><a href="mailto:rajatht@icloud.com">rajatht@icloud.com</a></p>
     </div>
   </section>
 </main>
@@ -572,7 +571,7 @@ footer a:hover span{transform:translateY(-3px)}
     {k:['where','from','live','based','location','country','india','australia','city'],
      a:"Rajath is from India and completed his Masters at Macquarie University in Sydney, Australia."},
     {k:['contact','email','reach','hire','connect','touch','message','available','hiring'],
-     a:'You can get in touch through the <a href="#contact" data-close>Contact section</a> at the bottom of this page.'},
+     a:'You can email Rajath at <a href="mailto:rajatht@icloud.com">rajatht@icloud.com</a>, or use the <a href="#contact" data-close>Contact section</a> at the bottom of this page.'},
     {k:['rajath','yourself','introduce','introduction','background','summary','bio','engineer','profile','overview'],
      p:/\bwho are you\b|\babout you\b|\bwho is rajath\b|\btell me about (him|yourself)\b/,
      a:"Hi, I'm Rajath Thaliyadath, an AI & Software Engineer from India. I completed my Masters of IT in AI at Macquarie University, Australia, in October 2026, and I'm now learning about AI agents and building small projects. With experience at QBurst, I specialize in RAG, Python, and Django."},
@@ -669,9 +668,7 @@ body.touring{overflow:hidden}
     {el:function(){return document.querySelector('#askBtn .ask-av')},top:true,agent:true,
      msg:"This is the miniature me. Click it anytime to ask about my education, skills, experience and interests."},
     {el:function(){return narrow()?document.querySelector('.mark'):document.querySelector('.nav-r')},top:true,
-     msg:function(){return narrow()?"Tap my name anytime to jump back to the top.":"Use the menu to jump straight to any section."}},
-    {el:function(){return document.querySelector('.now')},
-     msg:"See what I'm doing right now: learning about AI agents and building small projects."},
+     msg:function(){return narrow()?"Tap my name to jump back to the top. It hides as you scroll down; scroll up a little to bring it back.":"Use the menu to jump straight to any section. It hides as you scroll down; scroll up a little to bring it back."}},
     {el:function(){return document.querySelector('#contact .wrap')},
      msg:"Want to reach me? Get in touch here."}
   ];

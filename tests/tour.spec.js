@@ -133,6 +133,40 @@ test.describe('welcome tutorial', () => {
   });
 });
 
+test.describe('welcome tutorial: steps', () => {
+  // User request 2026-11-16: remove the "Now" step; keep 4 steps.
+  test('has exactly 4 steps: theme, Ask me agent, menu/name, contact', async ({ page }) => {
+    await loadWithTour(page);
+    await expect(page.locator('.tour-dots i')).toHaveCount(4);
+    const msgs = [];
+    for (let i = 0; i < 4; i++) {
+      await page.waitForTimeout(400);
+      msgs.push(await page.locator('.tour-msg').textContent());
+      await page.locator('#tour').click();
+    }
+    expect(msgs[0]).toBe('This switches light and dark mode.');
+    expect(msgs[1]).toMatch(/miniature me/);
+    expect(msgs[2]).toMatch(/menu|my name/);
+    expect(msgs[3]).toMatch(/reach me|touch/i);
+    expect(msgs.join(' ')).not.toMatch(/doing right now/);
+  });
+
+  // Regression 2026-11-16: step 3 said "tap my name" without saying the header hides on scroll.
+  for (const vp of [{ width: 1280, height: 800 }, { width: 375, height: 812 }]) {
+    test(`step 3 tells how to bring the header back (${vp.width}px)`, async ({ browser }) => {
+      const ctx = await browser.newContext({ viewport: vp });
+      const page = await ctx.newPage();
+      await loadWithTour(page);
+      await page.locator('#tour').click();
+      await page.locator('#tour').click();
+      await page.waitForTimeout(500);
+      await expect(page.locator('.tour-step')).toHaveText(/^03 \//);
+      await expect(page.locator('.tour-msg')).toContainText(/scroll up/i);
+      await ctx.close();
+    });
+  }
+});
+
 test.describe('welcome tutorial: first visit only', () => {
   test('does not show again after the tutorial was finished', async ({ page }) => {
     await loadWithTour(page);

@@ -79,6 +79,7 @@ test.describe('ask-me agent: chat', () => {
     ['Any certifications?', /Python Programming.*Django Framework.*AI & Machine Learning/],
     ['What are your hobbies?', /athletics and playing the piano/],
     ['How can I contact you?', /Contact section/],
+    ['What is your email?', /rajatht@icloud\.com/],
     ['Tell me about yourself', /Rajath Thaliyadath/],
     ['Who are you?', /Rajath Thaliyadath/],
   ];

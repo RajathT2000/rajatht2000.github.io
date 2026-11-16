@@ -70,4 +70,10 @@ test.describe('content', () => {
     expect(html).not.toContain('id="cursor"');
     expect(html).not.toMatch(/#cursor\b/);
   });
+
+  test('contact email is rajatht@icloud.com (no placeholder)', () => {
+    expect(html).not.toContain('you@example.com');
+    expect(html).toContain('href="mailto:rajatht@icloud.com"');
+    expect(html).toMatch(/>rajatht@icloud\.com</);
+  });
 });

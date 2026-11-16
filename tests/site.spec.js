@@ -115,4 +115,23 @@ test.describe('site', () => {
     await page.mouse.move(400, 350);
     await expect(page.locator('#cursor')).toHaveCount(0);
   });
+
+  // Regression 2026-11-16: tutorial said "tap my name" but the header (name + menu) hides when scrolling down.
+  test('header hides on scroll down and comes back on scroll up', async ({ page }) => {
+    await load(page);
+    await page.mouse.wheel(0, 1200);
+    await expect(page.locator('#hdr')).toHaveClass(/hide/, { timeout: 3000 });
+    await page.mouse.wheel(0, -200);
+    await expect(page.locator('#hdr')).not.toHaveClass(/hide/, { timeout: 3000 });
+    await expect(page.locator('.mark')).toBeInViewport();
+  });
+
+  test('clicking my name returns to the top', async ({ page }) => {
+    await load(page);
+    await page.evaluate(() => window.scrollTo(0, 1500));
+    await page.mouse.wheel(0, -100);
+    await expect(page.locator('#hdr')).not.toHaveClass(/hide/, { timeout: 3000 });
+    await page.locator('.mark').click();
+    await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBe(0);
+  });
 });
