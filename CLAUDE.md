@@ -15,7 +15,7 @@ npm test
 - `tests/content.spec.js`: static checks on `index.html` (content, links, safety).
 - `tests/site.spec.js`: browser behaviour (loader, theme, reveal, layout, errors).
 - `tests/agent.spec.js`: "Ask me" agent (visibility, chat UI, answers, refusals).
-- `tests/tour.spec.js`: welcome tutorial (starts after load, max 5 steps, any click advances, last click ends, mobile fit). `load()` in `tests/helpers.js` closes the tutorial with Escape before other tests run.
+- `tests/tour.spec.js`: welcome tutorial (first visit only, starts after load, max 5 steps, any click advances, last click ends, mobile fit). `load()` in `tests/helpers.js` closes the tutorial with Escape when it shows.
 
 ## Rules (always follow)
 

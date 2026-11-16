@@ -126,11 +126,52 @@ test.describe('welcome tutorial', () => {
   });
 
   test('matches the theme: message box uses the site colours in dark mode', async ({ page }) => {
-    await page.goto('/');
-    await page.evaluate(() => localStorage.setItem('theme', 'dark'));
+    await page.addInitScript(() => localStorage.setItem('theme', 'dark'));
     await loadWithTour(page);
     const bg = await page.locator('.tour-box').evaluate(el => getComputedStyle(el).backgroundColor);
     expect(bg).toBe('rgb(14, 14, 13)');
+  });
+});
+
+test.describe('welcome tutorial: first visit only', () => {
+  test('does not show again after the tutorial was finished', async ({ page }) => {
+    await loadWithTour(page);
+    for (let i = 0; i < 5 && await page.locator('#tour').count(); i++) await page.locator('#tour').click();
+    await expect(page.locator('#tour')).toHaveCount(0, { timeout: 3000 });
+    await page.reload();
+    await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+    await page.waitForTimeout(2500);
+    await expect(page.locator('#tour')).toHaveCount(0);
+    await expect(page.locator('body')).not.toHaveClass(/touring/);
+  });
+
+  test('does not show again after it was closed early with Escape', async ({ page }) => {
+    await loadWithTour(page);
+    await page.keyboard.press('Escape');
+    await page.reload();
+    await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+    await page.waitForTimeout(2500);
+    await expect(page.locator('#tour')).toHaveCount(0);
+  });
+
+  test('a brand-new visitor still sees it', async ({ browser }) => {
+    const ctx = await browser.newContext();
+    const page = await ctx.newPage();
+    await loadWithTour(page);
+    await expect(page.locator('.tour-msg')).toHaveText('This switches light and dark mode.');
+    await ctx.close();
+  });
+
+  test('site still works when browser storage is blocked (tutorial may show)', async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', e => errors.push(e.message));
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } });
+    });
+    await page.goto('/');
+    await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
+    await page.waitForTimeout(2000);
+    expect(errors).toEqual([]);
   });
 });
 

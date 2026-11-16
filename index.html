@@ -743,6 +743,7 @@ body.touring{overflow:hidden}
 
   function start(){
     if(tour)return;
+    markSeen();
     body.classList.add('touring');
     build();i=-1;snap=true;next();frame();
     requestAnimationFrame(function(){tour.classList.add('on');tour.focus({preventScroll:true})});
@@ -757,6 +758,12 @@ body.touring{overflow:hidden}
     setTimeout(function(){t.remove()},reduce?0:450);
     window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
   }
+
+  /* first visit only: remember that this visitor has seen it */
+  var seen=false;
+  try{seen=!!localStorage.getItem('tourSeen')}catch(e){}
+  if(seen)return;
+  function markSeen(){try{localStorage.setItem('tourSeen','1')}catch(e){}}
 
   /* start once the loader has finished */
   var wait=setInterval(function(){

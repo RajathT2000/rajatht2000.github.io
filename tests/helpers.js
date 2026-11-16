@@ -5,13 +5,17 @@ const path = require('path');
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
 
 /** Open the page, wait for the loader to finish, then close the welcome tutorial
- *  (it starts on every load; tests/tour.spec.js covers it). */
+ *  if it shows (first visit only; tests/tour.spec.js covers it). */
 async function load(page) {
   await page.goto('/');
+  // the tutorial shows only on a visitor's first visit
+  const firstVisit = await page.evaluate(() => { try { return !localStorage.getItem('tourSeen'); } catch (e) { return true; } });
   await expect(page.locator('body')).toHaveClass(/loaded/, { timeout: 8000 });
   await expect(page.locator('#loader')).toHaveCount(0, { timeout: 5000 });
-  await expect(page.locator('#tour')).toBeVisible({ timeout: 5000 });
-  await page.keyboard.press('Escape');
+  if (firstVisit) {
+    await expect(page.locator('#tour')).toBeVisible({ timeout: 5000 });
+    await page.keyboard.press('Escape');
+  }
   await expect(page.locator('#tour')).toHaveCount(0, { timeout: 3000 });
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 3000 }).toBe(0);
 }
