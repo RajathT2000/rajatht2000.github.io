@@ -22,7 +22,8 @@ function startMock(handler) {
 function startServer(env) {
   return new Promise((resolve, reject) => {
     const port = 20000 + Math.floor(Math.random() * 20000);
-    const p = spawn(process.execPath, [SERVER], { env: { PATH: process.env.PATH, PORT: String(port), HOST: '127.0.0.1', OPENAI_API_KEY: '', ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
+    // OPENAI_MODELS:'' blocks the real .env list so unit tests control the model.
+    const p = spawn(process.execPath, [SERVER], { env: { PATH: process.env.PATH, PORT: String(port), HOST: '127.0.0.1', OPENAI_API_KEY: '', OPENAI_MODELS: '', ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
     let out = '';
     p.stdout.on('data', d => { out += d; if (out.includes('http://')) resolve({ p, base: `http://127.0.0.1:${port}`, out: () => out }); });
     p.stderr.on('data', d => { out += d; });
@@ -36,7 +37,7 @@ test.describe('server: /api/ask', () => {
   test.beforeAll(async () => {
     mock = await startMock((call, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ choices: [{ message: { content: '  Rajath worked at QBurst.  ' } }] }));
+      res.end(JSON.stringify({ choices: [{ message: { content: '  I worked at QBurst.  ' } }] }));
     });
     s = await startServer({ OPENAI_API_KEY: 'sk-test-SECRET', OPENAI_BASE_URL: mock.url, OPENAI_MODEL: 'test-model', RATE_LIMIT: '4' });
   });
@@ -45,16 +46,17 @@ test.describe('server: /api/ask', () => {
   test('answers via OpenAI with the portfolio-only system prompt', async () => {
     const r = await post(s.base, { question: 'Where did you work?', history: [{ role: 'user', content: 'hi' }, { role: 'assistant', content: 'Hello!' }] });
     expect(r.status).toBe(200);
-    expect(await r.json()).toEqual({ answer: 'Rajath worked at QBurst.' });
+    expect(await r.json()).toEqual({ answer: 'I worked at QBurst.' });
     const c = mock.calls.at(-1);
     expect(c.url).toBe('/v1/chat/completions');
     expect(c.headers.authorization).toBe('Bearer sk-test-SECRET');
     expect(c.body.model).toBe('test-model');
-    expect(c.body.max_tokens).toBeLessThanOrEqual(300);
+    expect(c.body.max_completion_tokens).toBeLessThanOrEqual(300);
     const msgs = c.body.messages;
     expect(msgs[0].role).toBe('system');
     expect(msgs[0].content).toContain('Answer ONLY with facts from the KNOWLEDGE');
-    expect(msgs[0].content).toContain("Sorry, I can only answer questions about Rajath's portfolio");
+    expect(msgs[0].content).toContain('Speak in the first person as Rajath');
+    expect(msgs[0].content).toContain('Sorry, I can only answer questions about my portfolio');
     expect(msgs[0].content).toContain('QBurst Technologies');
     expect(msgs.slice(1).map(m => m.role)).toEqual(['user', 'assistant', 'user']);
     expect(msgs.at(-1).content).toBe('Where did you work?');
@@ -123,11 +125,26 @@ test.describe('server: guards', () => {
 
   test('upstream failure: 502 with a friendly message', async () => {
     const mock = await startMock((c, res) => { res.writeHead(500); res.end('boom'); });
-    const s = await startServer({ OPENAI_API_KEY: 'k', OPENAI_BASE_URL: mock.url });
+    const s = await startServer({ OPENAI_API_KEY: 'k', OPENAI_BASE_URL: mock.url, OPENAI_MODEL: 'one' });
     try {
       const r = await post(s.base, { question: 'hi' });
       expect(r.status).toBe(502);
       expect((await r.json()).error).toMatch(/unavailable/);
+    } finally { s.p.kill(); mock.srv.close(); }
+  });
+
+  test('tries OPENAI_MODELS in order until one works', async () => {
+    const mock = await startMock((c, res) => {
+      if (c.body.model === 'gpt-5.4') { res.writeHead(404); return res.end('missing'); }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ choices: [{ message: { content: 'I use ' + c.body.model } }] }));
+    });
+    const s = await startServer({ OPENAI_API_KEY: 'k', OPENAI_BASE_URL: mock.url, OPENAI_MODELS: 'gpt-5.4,gpt-5.2,gpt-5.1' });
+    try {
+      const r = await post(s.base, { question: 'hi' });
+      expect(r.status).toBe(200);
+      expect(await r.json()).toEqual({ answer: 'I use gpt-5.2' });
+      expect(mock.calls.map(c => c.body.model)).toEqual(['gpt-5.4', 'gpt-5.2']);
     } finally { s.p.kill(); mock.srv.close(); }
   });
 });
@@ -163,7 +180,8 @@ test.describe('knowledge', () => {
   });
   test('covers the key facts', () => {
     for (const s of ['QBurst', 'Macquarie University', 'October 2026', 'https://split.rajatht.me/', 'rajatht@icloud.com',
-      'https://www.linkedin.com/in/rajath-thaliyadath-77b040181', 'https://github.com/RajathT2000', 'piano']) expect(k).toContain(s);
+      'https://www.linkedin.com/in/rajath-thaliyadath-77b040181', 'https://github.com/RajathT2000', 'piano',
+      'PostgreSQL', 'REST APIs', 'FastAPI', 'Git']) expect(k).toContain(s);
   });
   test('.env is git-ignored and never committed', () => {
     const gi = fs.readFileSync(path.join(__dirname, '..', '.gitignore'), 'utf8');

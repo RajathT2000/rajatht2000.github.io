@@ -19,10 +19,13 @@ test.describe('content', () => {
     for (const id of new Set(hrefs)) expect(html, `#${id}`).toContain(`id="${id}"`);
   });
 
-  // Requirement change 2026-11-17: the user gave Split's live URL; it is the only project link allowed.
+  // Requirement change 2026-11-17: only user-given project links (Split + PDF AI Assistant, Price Tracker GitHub).
   test('no old project links (only links the user gave are listed)', () => {
     expect(html).not.toContain('id="work"');
-    const rest = html.split('https://split.rajatht.me/').join('');
+    const rest = html
+      .split('https://split.rajatht.me/').join('')
+      .split('https://pdf.rajatht.me/').join('')
+      .split('pdf.rajatht.me').join('');
     expect(rest).not.toMatch(/rajatht\.me|resume-agent|onrender\.com|hf\.space/);
   });
 
@@ -54,7 +57,8 @@ test.describe('content', () => {
 
   test('education, certifications and tech stack present', () => {
     for (const s of ['Masters of IT in AI', 'LBS College of Engineering, Kasaragod', 'Python Programming',
-      'Django Framework', 'AI &amp; Machine Learning', 'Selenium', 'athletics and playing the piano', 'QBurst']) {
+      'Django Framework', 'AI &amp; Machine Learning', 'Selenium', 'PostgreSQL', 'REST APIs', 'FastAPI', 'Git',
+      'athletics and playing the piano', 'QBurst']) {
       expect(html, s).toContain(s);
     }
   });
@@ -151,6 +155,13 @@ test.describe('content', () => {
     expect(html).toMatch(/<h4>Price Tracker<\/h4>/);
     expect(html).toContain('Tracks product prices and alerts my phone when a lower price or new deal appears. Runs on its own every hour, free.');
     expect(html).toMatch(/<a\b[^>]*class="[^"]*\bproj\b[^"]*"[^>]*href="https:\/\/github\.com\/RajathT2000\/price-tracker"[^>]*target="_blank"/);
+  });
+
+  test('PDF AI Assistant card: summary, details and live link', () => {
+    expect(html).toMatch(/<h4>PDF AI Assistant<\/h4>/);
+    expect(html).toContain('Ask questions and draft content grounded in an uploaded PDF.');
+    expect(html).toMatch(/<a\b[^>]*class="[^"]*\bproj\b[^"]*"[^>]*href="https:\/\/pdf\.rajatht\.me\/"[^>]*target="_blank"/);
+    expect(html).toContain('<span class="ix">03</span>');
   });
 
   // Requirement change 2026-11-17: the user asked to remove the voice intro from About.

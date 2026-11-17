@@ -43,7 +43,7 @@ curl -s http://127.0.0.1:3000/api/health   # → {"ok":true,"ai":true}
 ```
 
 The other settings in `.env`:
-- `OPENAI_MODEL`: any chat model your key can use. The default is `gpt-4o-mini`, which is cheap.
+- `OPENAI_MODELS`: comma-separated chat models tried in order (default `gpt-5.4,gpt-5.2,gpt-5.1`). Or set a single `OPENAI_MODEL`.
 - `RATE_LIMIT`: questions per visitor per 10 minutes.
 - `DAILY_CAP`: the most AI answers per day, which caps your cost.
 

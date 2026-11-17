@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 const { load, scrollPastAbout, ask } = require('./helpers');
 
-const REFUSAL = /only answer questions about Rajath's portfolio/;
+const REFUSAL = /only answer questions about my portfolio/;
 
 test.describe('ask-me agent: visibility', () => {
   test('hidden on load, before scrolling past About', async ({ page }) => {

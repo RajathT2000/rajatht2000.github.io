@@ -2,20 +2,22 @@
 const cases = [
   ["What's your current project?", /learning about AI agents and building small projects/],
   ['What are you learning?', /learning about AI agents/],
-  ['Did you finish your masters?', /completed his Masters of IT in AI.*October 2026/],
+  ['Did you finish your masters?', /completed my Masters of IT in AI.*October 2026/],
   ['Where did you study?', /Macquarie University/],
   ['Tell me about your bachelor degree', /LBS College of Engineering, Kasaragod/],
   ['Where are you from?', /from India/],
-  ['Do you know Python?', /Python, AI\/ML, Django and Selenium/],
-  ['Tech stack', /Selenium/],
+  ['Do you know Python?', /Python, AI\/ML, Django, Selenium, PostgreSQL, REST APIs, FastAPI and Git/],
+  ['Tech stack', /PostgreSQL.*REST APIs.*FastAPI.*Git/],
   ['Where have you worked?', /QBurst/],
   ['Any certifications?', /Python Programming.*Django Framework.*AI & Machine Learning/],
   ['What are your hobbies?', /athletics and playing the piano/],
   ['How can I contact you?', /Contact section/],
   ['What is your email?', /rajatht@icloud\.com/],
-  ['Tell me about Split', /Split is a live web app for sharing bills fairly/],
+  ['Tell me about Split', /Split is my live web app for sharing bills fairly/],
   ['What projects have you built?', /Split/],
   ['Is Split built with Django?', /Django and PostgreSQL/],
+  ['Tell me about the PDF AI Assistant', /PDF AI Assistant is my live Django web app/],
+  ['What is pdf.rajatht.me?', /pdf\.rajatht\.me/],
   ['Tell me about yourself', /Rajath Thaliyadath/],
   ['Who are you?', /Rajath Thaliyadath/],
   ['Tell me about the price tracker', /OzBargain/],
@@ -27,6 +29,6 @@ const cases = [
 ];
 const unrelated = ['What is the capital of France?', 'Who is the president?', 'Write me a poem', 'whats the weather tomorrow'];
 const notOngoing = ['Are you studying?', 'education', 'Where are you from?'];
-const REFUSAL = /only answer questions about Rajath's portfolio/;
+const REFUSAL = /only answer questions about my portfolio/;
 
 module.exports = { cases, unrelated, notOngoing, REFUSAL };

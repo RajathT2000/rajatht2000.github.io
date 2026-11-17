@@ -378,6 +378,16 @@ footer a:hover span{transform:translateY(-3px)}
           </div>
           <span class="proj-hint">Hover for details · click to open</span>
         </a>
+        <a class="cert proj r tilt" href="https://pdf.rajatht.me/" target="_blank" rel="noopener" aria-label="PDF AI Assistant: Ask questions and draft content grounded in an uploaded PDF. Opens the live site in a new tab.">
+          <span class="proj-go" aria-hidden="true">↗</span>
+          <span class="ix">03</span>
+          <h4>PDF AI Assistant</h4>
+          <div class="proj-body">
+            <p class="proj-short">Ask questions and draft content grounded in an uploaded PDF.</p>
+            <p class="proj-full">PDF AI Assistant is a live Django web app for chatting with a document. Upload a PDF (up to 10 MB), and the app extracts text with page numbers, chunks it, and embeds it with OpenAI. Ask questions, summarize sections, or draft emails and action items—every answer is grounded only in the file, with page citations. If something isn’t in the document, it refuses instead of guessing. Built with Django, pypdf, OpenAI embeddings/chat, HTMX, and Tailwind; hosted on a DigitalOcean droplet at pdf.rajatht.me.</p>
+          </div>
+          <span class="proj-hint">Hover for details · click to open</span>
+        </a>
       </div>
     </div>
   </section>
@@ -423,6 +433,10 @@ footer a:hover span{transform:translateY(-3px)}
           <span class="sk" data-x="0.05" style="--i:1"><b>AI/ML</b></span>
           <span class="sk" data-x="-0.04" style="--i:2"><b>Django</b></span>
           <span class="sk" data-x="0.07" style="--i:3"><b>Selenium</b></span>
+          <span class="sk" data-x="-0.05" style="--i:4"><b>PostgreSQL</b></span>
+          <span class="sk" data-x="0.06" style="--i:5"><b>REST APIs</b></span>
+          <span class="sk" data-x="-0.03" style="--i:6"><b>FastAPI</b></span>
+          <span class="sk" data-x="0.04" style="--i:7"><b>Git</b></span>
         </div>
       </div>
     </div>
@@ -623,7 +637,7 @@ footer a:hover span{transform:translateY(-3px)}
   </symbol>
 </svg>
 <div id="ask" aria-live="polite">
-  <div class="ask-panel" id="askPanel" role="dialog" aria-label="Ask me about Rajath's portfolio" aria-hidden="true">
+  <div class="ask-panel" id="askPanel" role="dialog" aria-label="Ask me about my portfolio" aria-hidden="true">
     <div class="ask-head">
       <svg aria-hidden="true"><use href="#me"/></svg>
       <div><h3>Ask me</h3><small>Answers from this portfolio only</small></div>
@@ -657,41 +671,43 @@ footer a:hover span{transform:translateY(-3px)}
   /* knowledge: portfolio content only */
   var KB=[
     {k:['current','currently','project','projects','building','working','now','doing','apps','built','portfolio','learning','learn','agents','agent','small'],
-     a:"Right now Rajath is learning about AI agents and building small projects to practise what he learns. His listed projects are Split (shared expense tracker for groups, trips, and households) and Price Tracker (tracks product prices and alerts his phone about lower prices and new deals)."},
+     a:"Right now I'm learning about AI agents and building small projects to practise what I learn. My listed projects are Split (shared expense tracker for groups, trips, and households), Price Tracker (tracks product prices and alerts my phone about lower prices and new deals), and PDF AI Assistant (ask questions and draft content grounded in an uploaded PDF)."},
     {k:['price','prices','tracker','deal','deals','ozbargain','ntfy','alert','alerts','discount','discounts','beautifulsoup','sqlite','notification','notifications','cheaper'],
-     a:"Price Tracker tracks product prices and alerts Rajath's phone when a lower price or new deal appears; it runs on its own every hour, free. Add a product by link or name and check it hourly or daily; it detects price drops and discounts, looks for the same product cheaper at other stores, and a Watch mode alerts on new deals for a brand or keyword from OzBargain's deal feed. Every check is saved to a history file and alerts go to his phone via ntfy. Built with Python, requests, BeautifulSoup, SQLite, GitHub Actions (scheduled hourly), ntfy and pytest (44 tests), with no paid hosting or paid APIs. Code: <a href=\"https://github.com/RajathT2000/price-tracker\" target=\"_blank\" rel=\"noopener\">github.com/RajathT2000/price-tracker</a>"},
+     a:"Price Tracker tracks product prices and alerts my phone when a lower price or new deal appears; it runs on its own every hour, free. Add a product by link or name and check it hourly or daily; it detects price drops and discounts, looks for the same product cheaper at other stores, and a Watch mode alerts on new deals for a brand or keyword from OzBargain's deal feed. Every check is saved to a history file and alerts go to my phone via ntfy. Built with Python, requests, BeautifulSoup, SQLite, GitHub Actions (scheduled hourly), ntfy and pytest (44 tests), with no paid hosting or paid APIs. Code: <a href=\"https://github.com/RajathT2000/price-tracker\" target=\"_blank\" rel=\"noopener\">github.com/RajathT2000/price-tracker</a>"},
     {k:['split','splitwise','expense','expenses','bills','bill','owes','owe','settle','groups','trips','households','postgresql','postgres','recurring'],
-     a:"Split is a live web app for sharing bills fairly. Create a group, add members, log expenses with equal or custom splits, track who owes whom, and settle up. Built with Django and PostgreSQL, it supports recurring expenses and shareable edit links—no account login required."},
+     a:"Split is my live web app for sharing bills fairly. Create a group, add members, log expenses with equal or custom splits, track who owes whom, and settle up. Built with Django and PostgreSQL, it supports recurring expenses and shareable edit links—no account login required."},
+    {k:['pdf','pdfs','upload','uploaded','document','documents','citation','citations','pypdf','htmx','tailwind','embeddings','embedding','chunk','chunks','digitalocean','droplet','grounded','summarize','draft'],
+     a:"PDF AI Assistant is my live Django web app for chatting with a document. Upload a PDF (up to 10 MB), and the app extracts text with page numbers, chunks it, and embeds it with OpenAI. Ask questions, summarize sections, or draft emails and action items—every answer is grounded only in the file, with page citations. If something isn’t in the document, it refuses instead of guessing. Built with Django, pypdf, OpenAI embeddings/chat, HTMX, and Tailwind; hosted on a DigitalOcean droplet at <a href=\"https://pdf.rajatht.me/\" target=\"_blank\" rel=\"noopener\">pdf.rajatht.me</a>."},
     {k:['certifications','certification','certificates','certificate','certified','courses','training','learned'],
-     a:"Rajath's certifications & courses: Python Programming (Python fundamentals and advanced concepts), Django Framework (Django web development), and AI & Machine Learning (AI and ML fundamentals)."},
+     a:"My certifications & courses: Python Programming (Python fundamentals and advanced concepts), Django Framework (Django web development), and AI & Machine Learning (AI and ML fundamentals)."},
     {k:['education','study','studying','studies','graduate','graduated','completed','finished','finish','masters','master','university','macquarie','degree','degrees','qualification','qualifications','course','sydney','student'],
-     a:"Rajath completed his Masters of IT in AI at Macquarie University, Sydney, in October 2026. Before that he completed a Bachelor's Degree in Engineering at LBS College of Engineering, Kasaragod."},
+     a:"I completed my Masters of IT in AI at Macquarie University, Sydney, in October 2026. Before that I completed a Bachelor's Degree in Engineering at LBS College of Engineering, Kasaragod."},
     {k:['bachelor','bachelors','undergraduate','undergrad','lbs','kasaragod','engineering','graduated'],
-     a:"Rajath completed his Bachelor's Degree (undergraduate studies in Engineering) at LBS College of Engineering, Kasaragod."},
+     a:"I completed my Bachelor's Degree (undergraduate studies in Engineering) at LBS College of Engineering, Kasaragod."},
     {k:['experience','qburst','job','jobs','work','worked','company','career','employer','industry','professional'],
-     a:"Rajath has experience at QBurst. He's an AI & Software Engineer specializing in RAG, Python, and Django."},
-    {k:['skills','skill','stack','tech','technologies','technology','tools','languages','language','python','django','selenium','ml','ai','machine','expertise','specialize','specialise','specializes','specialty','rag','retrieval','strengths'],
-     a:"Rajath specializes in Retrieval-Augmented Generation (RAG), Python, and Django. His tech stack: Python, AI/ML, Django and Selenium."},
+     a:"I have experience at QBurst. I'm an AI & Software Engineer specializing in RAG, Python, and Django."},
+    {k:['skills','skill','stack','tech','technologies','technology','tools','languages','language','python','django','selenium','postgresql','postgres','rest','fastapi','git','ml','ai','machine','expertise','specialize','specialise','specializes','specialty','rag','retrieval','strengths'],
+     a:"I specialize in Retrieval-Augmented Generation (RAG), Python, and Django. My tech stack: Python, AI/ML, Django, Selenium, PostgreSQL, REST APIs, FastAPI and Git."},
     {k:['hobby','hobbies','interests','interest','fun','free','piano','athletics','music','sport','sports','enjoy','outside','passion','passions'],
-     a:"Beyond coding, Rajath enjoys athletics and playing the piano."},
+     a:"Beyond coding, I enjoy athletics and playing the piano."},
     {k:['where','from','live','based','location','country','india','australia','city'],
-     a:"Rajath is from India and completed his Masters at Macquarie University in Sydney, Australia."},
+     a:"I'm from India and completed my Masters at Macquarie University in Sydney, Australia."},
     {k:['linkedin'],
-     a:'Rajath\'s LinkedIn: <a href="https://www.linkedin.com/in/rajath-thaliyadath-77b040181" target="_blank" rel="noopener">https://www.linkedin.com/in/rajath-thaliyadath-77b040181</a>'},
+     a:'My LinkedIn: <a href="https://www.linkedin.com/in/rajath-thaliyadath-77b040181" target="_blank" rel="noopener">https://www.linkedin.com/in/rajath-thaliyadath-77b040181</a>'},
     {k:['github','repos','repositories','repository','source'],
-     a:'Rajath\'s GitHub: <a href="https://github.com/RajathT2000" target="_blank" rel="noopener">https://github.com/RajathT2000</a>'},
+     a:'My GitHub: <a href="https://github.com/RajathT2000" target="_blank" rel="noopener">https://github.com/RajathT2000</a>'},
     {k:['cv','resume','download','curriculum'],
-     a:'You can download Rajath\'s CV here: <a href="cv/Rajath_Thaliyadath_CV.pdf" download>Rajath_Thaliyadath_CV.pdf</a>'},
+     a:'You can download my CV here: <a href="cv/Rajath_Thaliyadath_CV.pdf" download>Rajath_Thaliyadath_CV.pdf</a>'},
     {k:['contact','email','reach','hire','connect','touch','message','available','hiring'],
-     a:'You can email Rajath at <a href="mailto:rajatht@icloud.com">rajatht@icloud.com</a>, or use the <a href="#contact" data-close>Contact section</a> at the bottom of this page.'},
+     a:'You can email me at <a href="mailto:rajatht@icloud.com">rajatht@icloud.com</a>, or use the <a href="#contact" data-close>Contact section</a> at the bottom of this page.'},
     {k:['rajath','yourself','introduce','introduction','background','summary','bio','engineer','profile','overview'],
      p:/\bwho are you\b|\babout you\b|\bwho is rajath\b|\btell me about (him|yourself)\b/,
      a:"Hi, I'm Rajath Thaliyadath, an AI & Software Engineer from India. I completed my Masters of IT in AI at Macquarie University, Australia, in October 2026, and I'm now learning about AI agents and building small projects. With experience at QBurst, I specialize in RAG, Python, and Django."},
     {k:['hi','hello','hey','hiya','greetings','yo','namaste'],
-     a:"Hi! 👋 Ask me anything about Rajath's portfolio: education, experience, skills, certifications or interests."},
-    {k:['thanks','thank','thx','cheers'],a:"You're welcome! Anything else about the portfolio?"}
+     a:"Hi! 👋 Ask me anything about my portfolio: education, experience, skills, certifications or interests."},
+    {k:['thanks','thank','thx','cheers'],a:"You're welcome! Anything else about my portfolio?"}
   ];
-  var REFUSE="Sorry, I can only answer questions about Rajath's portfolio, like his education, experience, skills, certifications or interests.";
+  var REFUSE="Sorry, I can only answer questions about my portfolio, like my education, experience, skills, certifications or interests.";
 
   function answer(q){
     var s=q.toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9/ ]+/g,' ');
