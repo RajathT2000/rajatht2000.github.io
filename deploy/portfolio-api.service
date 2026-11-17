@@ -1,0 +1,31 @@
+# systemd unit for the portfolio "Ask me" API (server/server.js).
+# Installed by deploy/setup.sh as /etc/systemd/system/portfolio-api.service
+[Unit]
+Description=Portfolio Ask-me API (Node)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=portfolio
+Group=portfolio
+WorkingDirectory=/var/www/portfolio
+EnvironmentFile=/var/www/portfolio/.env
+Environment=NODE_ENV=production
+# NODE_BIN is replaced with the real node path by setup.sh
+ExecStart=NODE_BIN server/server.js
+Restart=always
+RestartSec=3
+
+# hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/var/www/portfolio
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

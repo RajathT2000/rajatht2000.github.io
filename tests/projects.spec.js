@@ -103,3 +103,48 @@ test.describe('projects: Split on mobile', () => {
     expect(await opacity(card.locator('.proj-full'))).toBe(1);
   });
 });
+
+// 2026-11-17: Price Tracker project card (user-provided details only).
+test.describe('projects: Price Tracker', () => {
+  const SHORT = 'Tracks product prices and alerts my phone when a lower price or new deal appears. Runs on its own every hour, free.';
+  test.beforeEach(async ({ context }) => {
+    await context.route('https://github.com/RajathT2000/price-tracker**', r => r.fulfill({ status: 200, contentType: 'text/html', body: 'ok' }));
+  });
+
+  test('card has the title and one-line summary; details hidden until hover', async ({ page }) => {
+    await load(page);
+    const card = page.locator('#projects .proj', { hasText: 'Price Tracker' });
+    await expect(card).toHaveCount(1);
+    await card.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1300);
+    await expect(card.locator('h4')).toHaveText('Price Tracker');
+    await expect(card.locator('.proj-short')).toHaveText(SHORT);
+    expect(await opacity(card.locator('.proj-full'))).toBe(0);
+    await card.hover();
+    await page.waitForTimeout(700);
+    expect(await opacity(card.locator('.proj-full'))).toBe(1);
+    const full = await card.locator('.proj-full').textContent();
+    for (const s of ['every hour or every day', 'OzBargain', 'history file', 'ntfy', 'GitHub Actions', 'pytest (44 tests)', 'no paid hosting or paid APIs'])
+      expect(full).toContain(s);
+  });
+
+  test('same style and structure as the Split card', async ({ page }) => {
+    await load(page);
+    const sig = sel => page.locator(sel).evaluate(el => {
+      const c = getComputedStyle(el);
+      return [el.tagName, c.borderTopWidth, c.borderTopColor, c.borderRadius, c.backgroundColor, c.paddingTop,
+        [...el.children].map(k => k.className || k.tagName).join('|')];
+    });
+    expect(await sig('#projects .proj:has(h4:text-is("Price Tracker"))')).toEqual(await sig('#projects .proj:has(h4:text-is("Split"))'));
+  });
+
+  test('clicking opens the GitHub repo in a new tab', async ({ page, context }) => {
+    await load(page);
+    const card = page.locator('#projects .proj', { hasText: 'Price Tracker' });
+    await card.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1300);
+    const [tab] = await Promise.all([context.waitForEvent('page'), card.click()]);
+    await tab.waitForLoadState();
+    expect(tab.url()).toBe('https://github.com/RajathT2000/price-tracker');
+  });
+});

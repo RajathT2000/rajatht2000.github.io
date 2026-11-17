@@ -194,7 +194,8 @@ a.row:hover .arrow,.row .meta:hover .arrow{transform:rotate(45deg);background:va
 /* ---------- projects (same card style as .cert) ---------- */
 .projects{display:grid;gap:16px;perspective:900px}
 @media(min-width:760px){.projects{grid-template-columns:repeat(2,1fr)}}
-.proj{outline:none;cursor:default;display:block;color:inherit}
+.proj{outline:none;cursor:default;display:flex;flex-direction:column;color:inherit}
+.proj .proj-body{flex:1}
 a.proj{cursor:pointer}
 .proj-go{position:absolute;top:22px;right:22px;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;font-size:.9rem;transform:translateZ(30px);transition:transform .5s var(--ease),background .3s,color .3s,border-color .3s}
 a.proj:hover .proj-go,a.proj:focus-visible .proj-go{transform:translateZ(30px) rotate(45deg);background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -225,6 +226,8 @@ a.proj:hover .proj-go,a.proj:focus-visible .proj-go{transform:translateZ(30px) r
 .contact h2 em{color:var(--muted);transition:color .4s}
 .contact h2 a:hover em{color:var(--ink)}
 .contact p{color:var(--muted);margin-top:32px;max-width:420px}
+.contact-links{display:flex;flex-wrap:wrap;gap:16px 32px;margin-top:32px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px 28px}
 
 footer{border-top:1px solid var(--line);padding:32px 0;font-size:.8rem;color:var(--muted)}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -327,7 +330,7 @@ footer a:hover span{transform:translateY(-3px)}
       <div class="hero-foot">
         <p class="h-fade d1"><strong>Rajath Thaliyadath</strong><br>AI &amp; Software Engineer specializing in RAG, Python, and Django</p>
         <p class="h-fade d1">Masters of IT in AI, completed Oct 2026<br>Now learning about AI agents</p>
-        <div class="h-fade d2"><a class="link mag" href="#contact">Get in touch <span class="ar">→</span></a></div>
+        <div class="h-fade d2 hero-cta"><a class="link mag" href="#contact">Get in touch <span class="ar">→</span></a><a class="link mag" href="cv/Rajath_Thaliyadath_CV.pdf" download>Download CV <span class="ar">↓</span></a></div>
       </div>
     </div>
     <div class="scroll-cue"></div>
@@ -362,6 +365,16 @@ footer a:hover span{transform:translateY(-3px)}
           <div class="proj-body">
             <p class="proj-short">Shared expense tracker for groups, trips, and households.</p>
             <p class="proj-full">Split is a live web app for sharing bills fairly. Create a group, add members, log expenses with equal or custom splits, track who owes whom, and settle up. Built with Django and PostgreSQL, it supports recurring expenses and shareable edit links—no account login required.</p>
+          </div>
+          <span class="proj-hint">Hover for details · click to open</span>
+        </a>
+        <a class="cert proj r tilt" href="https://github.com/RajathT2000/price-tracker" target="_blank" rel="noopener" aria-label="Price Tracker: Tracks product prices and alerts my phone when a lower price or new deal appears. Runs on its own every hour, free. Opens the GitHub repository in a new tab.">
+          <span class="proj-go" aria-hidden="true">↗</span>
+          <span class="ix">02</span>
+          <h4>Price Tracker</h4>
+          <div class="proj-body">
+            <p class="proj-short">Tracks product prices and alerts my phone when a lower price or new deal appears. Runs on its own every hour, free.</p>
+            <p class="proj-full">Add a product by pasting its link or name, and check it every hour or every day (set per product). It detects price drops and discounts on the product page, and looks for the same product cheaper at other stores. &ldquo;Watch&rdquo; mode alerts on every new deal for a brand or keyword (e.g. all Apple items) from OzBargain&rsquo;s deal feed. Every check (time, store, price, offer, result, link) is saved to a history file, and phone notifications arrive via ntfy with price, store and link. Built with Python, requests, BeautifulSoup, SQLite, GitHub Actions (scheduled hourly), ntfy and pytest (44 tests). Free: no paid hosting or paid APIs.</p>
           </div>
           <span class="proj-hint">Hover for details · click to open</span>
         </a>
@@ -420,6 +433,11 @@ footer a:hover span{transform:translateY(-3px)}
       <div class="num r" style="padding:0 0 32px">05 — Contact</div>
       <h2 class="r">Let's <a class="mag" href="mailto:rajatht@icloud.com"><em>talk</em> ↗</a></h2>
       <p class="r"><a href="mailto:rajatht@icloud.com">rajatht@icloud.com</a></p>
+      <div class="contact-links r">
+        <a class="link" href="https://www.linkedin.com/in/rajath-thaliyadath-77b040181" target="_blank" rel="noopener">LinkedIn <span class="ar">↗</span></a>
+        <a class="link" href="https://github.com/RajathT2000" target="_blank" rel="noopener">GitHub <span class="ar">↗</span></a>
+        <a class="link" href="cv/Rajath_Thaliyadath_CV.pdf" download>Download CV <span class="ar">↓</span></a>
+      </div>
     </div>
   </section>
 </main>
@@ -639,7 +657,9 @@ footer a:hover span{transform:translateY(-3px)}
   /* knowledge: portfolio content only */
   var KB=[
     {k:['current','currently','project','projects','building','working','now','doing','apps','built','portfolio','learning','learn','agents','agent','small'],
-     a:"Right now Rajath is learning about AI agents and building small projects to practise what he learns. His listed project is Split: Shared expense tracker for groups, trips, and households."},
+     a:"Right now Rajath is learning about AI agents and building small projects to practise what he learns. His listed projects are Split (shared expense tracker for groups, trips, and households) and Price Tracker (tracks product prices and alerts his phone about lower prices and new deals)."},
+    {k:['price','prices','tracker','deal','deals','ozbargain','ntfy','alert','alerts','discount','discounts','beautifulsoup','sqlite','notification','notifications','cheaper'],
+     a:"Price Tracker tracks product prices and alerts Rajath's phone when a lower price or new deal appears; it runs on its own every hour, free. Add a product by link or name and check it hourly or daily; it detects price drops and discounts, looks for the same product cheaper at other stores, and a Watch mode alerts on new deals for a brand or keyword from OzBargain's deal feed. Every check is saved to a history file and alerts go to his phone via ntfy. Built with Python, requests, BeautifulSoup, SQLite, GitHub Actions (scheduled hourly), ntfy and pytest (44 tests), with no paid hosting or paid APIs. Code: <a href=\"https://github.com/RajathT2000/price-tracker\" target=\"_blank\" rel=\"noopener\">github.com/RajathT2000/price-tracker</a>"},
     {k:['split','splitwise','expense','expenses','bills','bill','owes','owe','settle','groups','trips','households','postgresql','postgres','recurring'],
      a:"Split is a live web app for sharing bills fairly. Create a group, add members, log expenses with equal or custom splits, track who owes whom, and settle up. Built with Django and PostgreSQL, it supports recurring expenses and shareable edit links—no account login required."},
     {k:['certifications','certification','certificates','certificate','certified','courses','training','learned'],
@@ -656,6 +676,12 @@ footer a:hover span{transform:translateY(-3px)}
      a:"Beyond coding, Rajath enjoys athletics and playing the piano."},
     {k:['where','from','live','based','location','country','india','australia','city'],
      a:"Rajath is from India and completed his Masters at Macquarie University in Sydney, Australia."},
+    {k:['linkedin'],
+     a:'Rajath\'s LinkedIn: <a href="https://www.linkedin.com/in/rajath-thaliyadath-77b040181" target="_blank" rel="noopener">https://www.linkedin.com/in/rajath-thaliyadath-77b040181</a>'},
+    {k:['github','repos','repositories','repository','source'],
+     a:'Rajath\'s GitHub: <a href="https://github.com/RajathT2000" target="_blank" rel="noopener">https://github.com/RajathT2000</a>'},
+    {k:['cv','resume','download','curriculum'],
+     a:'You can download Rajath\'s CV here: <a href="cv/Rajath_Thaliyadath_CV.pdf" download>Rajath_Thaliyadath_CV.pdf</a>'},
     {k:['contact','email','reach','hire','connect','touch','message','available','hiring'],
      a:'You can email Rajath at <a href="mailto:rajatht@icloud.com">rajatht@icloud.com</a>, or use the <a href="#contact" data-close>Contact section</a> at the bottom of this page.'},
     {k:['rajath','yourself','introduce','introduction','background','summary','bio','engineer','profile','overview'],
@@ -687,11 +713,53 @@ footer a:hover span{transform:translateY(-3px)}
     if(who==='me')d.textContent=html;else d.innerHTML=html;
     log.appendChild(d);log.scrollTop=log.scrollHeight;return d;
   }
+  /* AI answers come from /api/ask (server/server.js on the droplet). If it is not there
+     (e.g. GitHub Pages) or fails, the built-in answer() above is used instead. */
+  var history=[];
+  function addText(text){
+    var d=document.createElement('div');d.className='msg bot';
+    text.split(/(https:\/\/[^\s<>"')]+|[\w.+-]+@[\w-]+\.[\w.-]*\w)/).forEach(function(part,i){
+      if(!part)return;
+      if(i%2){
+        var a=document.createElement('a');a.textContent=part;
+        if(part.indexOf('https://')===0){a.href=part;a.target='_blank';a.rel='noopener'}else a.href='mailto:'+part;
+        d.appendChild(a);
+      }else d.appendChild(document.createTextNode(part));
+    });
+    log.appendChild(d);log.scrollTop=log.scrollHeight;return d;
+  }
+  function aiAsk(q){
+    if(location.protocol==='file:'||!window.fetch)return Promise.resolve(null);
+    var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){ctl&&ctl.abort()},15000);
+    return fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question:q,history:history.slice(-6)}),signal:ctl?ctl.signal:undefined})
+      .then(function(r){
+        return r.json().catch(function(){return null}).then(function(j){
+          if(r.ok&&j&&typeof j.answer==='string'&&j.answer.trim())return {text:j.answer.trim()};
+          if(r.status===429&&j&&j.error)return {text:String(j.error),limited:true};
+          return null;
+        });
+      })
+      .catch(function(){return null})
+      .then(function(v){clearTimeout(to);return v});
+  }
   function reply(q){
     add(q,'me');chips.style.display='none';
     var t=add('<span class="typing"><i></i><i></i><i></i></span>','bot');t.style.padding='0';
-    setTimeout(function(){t.remove();add(answer(q),'bot')},550+Math.random()*450);
+    var started=Date.now();
+    aiAsk(q).then(function(ai){
+      var wait=Math.max(0,500-(Date.now()-started));
+      setTimeout(function(){
+        t.remove();
+        var text;
+        if(ai){addText(ai.text);text=ai.text;if(!ai.limited)markAI()}
+        else{var h=answer(q);add(h,'bot');text=h.replace(/<[^>]+>/g,'')}
+        history.push({role:'user',content:q.slice(0,600)},{role:'assistant',content:text.slice(0,600)});
+        history=history.slice(-6);
+      },wait);
+    });
   }
+  function markAI(){var sm=document.querySelector('.ask-head small');if(sm)sm.textContent='AI · answers from this portfolio only'}
 
   /* open / close */
   var greeted=false;

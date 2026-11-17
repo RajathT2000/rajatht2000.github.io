@@ -38,7 +38,7 @@ async function ask(page, question) {
   const before = await bots.count();
   await page.locator('#askInput').fill(question);
   await page.locator('#askSend').click();
-  await expect(bots).toHaveCount(before + 1, { timeout: 4000 });
+  await expect(bots).toHaveCount(before + 1, { timeout: 8000 }); // AI path awaits a network reply
   return (await bots.last().textContent()).trim();
 }
 

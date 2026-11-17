@@ -96,3 +96,43 @@ test.describe('ask-me agent: mobile', () => {
     expect(r.x + r.width).toBeLessThanOrEqual(375);
   });
 });
+
+// 2026-11-17: real AI answers from /api/ask (server/server.js); built-in answers are the fallback.
+test.describe('ask-me agent: AI mode', () => {
+  test('shows the AI answer as safe text, linkifies URLs and emails', async ({ page }) => {
+    await page.route('**/api/health', r => r.fulfill({ json: { ok: true, ai: true } }));
+    await page.route('**/api/ask', r => r.fulfill({ json: { answer: 'See https://github.com/RajathT2000 or email rajatht@icloud.com <img src=x onerror="window.__y=1">' } }));
+    await load(page); await scrollPastAbout(page);
+    const a = await ask(page, 'Where is your code?');
+    expect(a).toContain('See https://github.com/RajathT2000 or email rajatht@icloud.com');
+    const bubble = page.locator('#askLog .msg.bot').last();
+    await expect(bubble.locator('a[href="https://github.com/RajathT2000"][target="_blank"][rel="noopener"]')).toHaveCount(1);
+    await expect(bubble.locator('a[href="mailto:rajatht@icloud.com"]')).toHaveCount(1);
+    await expect(page.locator('#askLog img')).toHaveCount(0);
+    expect(await page.evaluate(() => window.__y)).toBeUndefined();
+    await expect(page.locator('.ask-head small')).toContainText('AI');
+  });
+
+  test('sends the question with recent chat history', async ({ page }) => {
+    const bodies = [];
+    await page.route('**/api/ask', r => { bodies.push(r.request().postDataJSON()); r.fulfill({ json: { answer: 'Answer ' + bodies.length } }); });
+    await load(page); await scrollPastAbout(page);
+    await ask(page, 'first question');
+    await ask(page, 'second question');
+    expect(bodies[0]).toEqual({ question: 'first question', history: [] });
+    expect(bodies[1].question).toBe('second question');
+    expect(bodies[1].history).toEqual([{ role: 'user', content: 'first question' }, { role: 'assistant', content: 'Answer 1' }]);
+  });
+
+  test('falls back to built-in answers when the AI is unavailable', async ({ page }) => {
+    await page.route('**/api/ask', r => r.fulfill({ status: 502, json: { error: 'AI is unavailable right now.' } }));
+    await load(page); await scrollPastAbout(page);
+    expect(await ask(page, 'What are your hobbies?')).toMatch(/athletics and playing the piano/);
+  });
+
+  test('rate-limited: shows the server message', async ({ page }) => {
+    await page.route('**/api/ask', r => r.fulfill({ status: 429, json: { error: 'Too many questions. Please try again in a few minutes.' } }));
+    await load(page); await scrollPastAbout(page);
+    expect(await ask(page, 'hobbies')).toMatch(/Too many questions/);
+  });
+});

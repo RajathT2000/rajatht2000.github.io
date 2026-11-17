@@ -18,6 +18,12 @@ const cases = [
   ['Is Split built with Django?', /Django and PostgreSQL/],
   ['Tell me about yourself', /Rajath Thaliyadath/],
   ['Who are you?', /Rajath Thaliyadath/],
+  ['Tell me about the price tracker', /OzBargain/],
+  ['How do you get deal alerts?', /ntfy/],
+  ['What is your LinkedIn?', /linkedin\.com\/in\/rajath-thaliyadath-77b040181/],
+  ['Do you have a GitHub?', /github\.com\/RajathT2000/],
+  ['Can I download your CV?', /Rajath_Thaliyadath_CV\.pdf/],
+  ['resume please', /Rajath_Thaliyadath_CV\.pdf/],
 ];
 const unrelated = ['What is the capital of France?', 'Who is the president?', 'Write me a poem', 'whats the weather tomorrow'];
 const notOngoing = ['Are you studying?', 'education', 'Where are you from?'];

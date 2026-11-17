@@ -130,4 +130,31 @@ test.describe('content', () => {
     expect(png('favicon-32.png')).toEqual([32, 32]);
     expect(png('apple-touch-icon.png')).toEqual([180, 180]);
   });
+
+  // 2026-11-17: GitHub, LinkedIn and downloadable CV (user-provided).
+  test('GitHub and LinkedIn links open in a new tab', () => {
+    for (const url of ['https://github.com/RajathT2000', 'https://www.linkedin.com/in/rajath-thaliyadath-77b040181']) {
+      const tags = [...html.matchAll(new RegExp(`<a\\b[^>]*href="${url.replace(/[.\/]/g, m => '\\' + m)}"[^>]*>`, 'g'))].map(m => m[0]);
+      expect(tags.length, url).toBeGreaterThan(0);
+      for (const t of tags) { expect(t).toContain('target="_blank"'); expect(t).toMatch(/rel="[^"]*noopener/); }
+    }
+  });
+
+  test('CV download button points to a real PDF', () => {
+    const fs = require('fs'), path = require('path');
+    expect(html).toMatch(/<a\b[^>]*href="cv\/Rajath_Thaliyadath_CV\.pdf"[^>]*\bdownload\b/);
+    const pdf = fs.readFileSync(path.join(__dirname, '..', 'cv', 'Rajath_Thaliyadath_CV.pdf'));
+    expect(pdf.slice(0, 5).toString()).toBe('%PDF-');
+  });
+
+  test('Price Tracker card: summary, details and GitHub link', () => {
+    expect(html).toMatch(/<h4>Price Tracker<\/h4>/);
+    expect(html).toContain('Tracks product prices and alerts my phone when a lower price or new deal appears. Runs on its own every hour, free.');
+    expect(html).toMatch(/<a\b[^>]*class="[^"]*\bproj\b[^"]*"[^>]*href="https:\/\/github\.com\/RajathT2000\/price-tracker"[^>]*target="_blank"/);
+  });
+
+  // Requirement change 2026-11-17: the user asked to remove the voice intro from About.
+  test('no voice intro in About', () => {
+    expect(html).not.toMatch(/id="voice"|voiceBtn|Listen to my intro|speechSynthesis|audio\/intro\.mp3/);
+  });
 });

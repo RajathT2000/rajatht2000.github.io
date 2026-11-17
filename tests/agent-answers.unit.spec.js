@@ -8,7 +8,7 @@ const start = html.indexOf('  var KB=[');
 const end = html.indexOf('  function add(html,who){', start);
 if (start < 0 || end < 0) throw new Error('agent KB/answer() not found in index.html');
 const answer = vm.runInNewContext(html.slice(start, end) + '; answer;', {});
-const text = q => answer(q).replace(/<[^>]+>/g, '');
+const text = q => answer(q).replace(/<a\b[^>]*href="([^"]+)"[^>]*>/g, ' $1 ').replace(/<[^>]+>/g, '');
 
 test.describe('agent answers (unit)', () => {
   for (const [q, re] of cases) {
@@ -22,7 +22,8 @@ test.describe('agent answers (unit)', () => {
   });
   test('answers contain only safe, known links', () => {
     for (const [q] of cases) {
-      for (const m of answer(q).matchAll(/href="([^"]+)"/g)) expect(m[1]).toMatch(/^(#contact|mailto:rajatht@icloud\.com)$/);
+      // requirement change 2026-11-17: LinkedIn, GitHub (profile + price-tracker repo) and CV links are also allowed
+      for (const m of answer(q).matchAll(/href="([^"]+)"/g)) expect(m[1]).toMatch(/^(#contact|mailto:rajatht@icloud\.com|https:\/\/www\.linkedin\.com\/in\/rajath-thaliyadath-77b040181|https:\/\/github\.com\/RajathT2000(\/price-tracker)?|cv\/Rajath_Thaliyadath_CV\.pdf)$/);
     }
   });
 });

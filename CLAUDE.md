@@ -1,6 +1,6 @@
 # Portfolio site — project rules
 
-Single-page portfolio (`index.html`), hosted on GitHub Pages:
+Single-page portfolio (`index.html`) + optional Node API (`server/server.js`, OpenAI "Ask me" answers). Droplet deploy: see `DEPLOY.md` (target https://rajatht.me). Also hosted on GitHub Pages (built-in answers only):
 - Live: https://rajatht2000.github.io
 - Repo: https://github.com/RajathT2000/rajatht2000.github.io (push to `main` deploys)
 
@@ -10,12 +10,14 @@ Playwright, in `tests/`. Runs 4 workers in parallel (`playwright.config.js`).
 
 | Script | Files | Run after changing |
 |---|---|---|
-| `npm run test:unit` | `content.spec.js`, `agent-answers.unit.spec.js` (no browser, ~1s) | anything (always run) |
+| `npm run test:unit` | `content.spec.js`, `agent-answers.unit.spec.js`, `server.unit.spec.js`, `deploy.unit.spec.js` (no browser, ~2s) | anything (always run) |
 | `npm run test:agent` | `agent-answers.unit.spec.js`, `agent.spec.js` | Ask-me agent (KB, answers, chat UI), or any text the agent quotes |
 | `npm run test:tour` | `tour.spec.js` | welcome tutorial, header, theme button, Ask-me avatar, contact section |
 | `npm run test:projects` | `projects.spec.js` | Projects section / card styles (`.cert`, `.proj`) |
 | `npm run test:motion` | `motion.spec.js` | Lenis, animations, reveals, hovers, section transitions, theme colours |
 | `npm run test:site` | `site.spec.js` | loader, theme, nav/scroll, header, layout, section titles |
+| `npm run test:voice` | `voice.spec.js` | voice intro player in About |
+| `npm run test:server` | `server.unit.spec.js`, `deploy.unit.spec.js` | `server/`, `deploy/`, `.env.example`, `DEPLOY.md` |
 | `npm test` | everything (~2.5 min) | before `git push`, or when the user says "full test" |
 
 A changed test file: run that file. Unsure which area: run the two most likely scripts.
@@ -40,3 +42,5 @@ A changed test file: run that file. Unsure which area: run the two most likely s
 - 2026-11-16: Part of the "Projects" title was clipped while scrolling: the title reveal used an overflow:hidden mask with line-height 1 (cut the "j" descender), and the parallax moved the title inside that mask. Fixed: parallax moved to the wrapper, glyph padding added, title reveal is now a non-clipping fade-up. Covered by `site.spec.js` "section titles are never clipped while scrolling" (desktop + mobile).
 - 2026-11-17: Contact section was an inverted band (white in dark mode, black in light). Now follows the page theme. Covered by `motion.spec.js` "contact follows the light/dark theme".
 - 2026-11-17: User wants the header bar fixed (always visible). Removed hide-on-scroll; tutorial step 3 no longer says it hides. Covered by `site.spec.js` "header bar stays fixed and visible" and `tour.spec.js` "step 3 describes the always-visible header correctly".
+- 2026-11-17: Live domain is `rajatht.me` (not `portfolio.rajatht.me`), same droplet as Split. Covered by `deploy.unit.spec.js` "defaults to rajatht.me and covers www".
+- 2026-11-17: User asked to remove the voice intro from About. Removed (HTML, CSS, JS, DEPLOY.md section). `voice.spec.js` now checks it stays removed; `content.spec.js` "no voice intro in About".
